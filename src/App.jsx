@@ -1,38 +1,34 @@
-import {
-	ChakraProvider,
-	Box,
-	Text,
-	Link,
-	VStack,
-	Code,
-	Grid,
-	theme,
-} from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
+import { Suspense } from 'react';
+import { ChakraProvider } from '@chakra-ui/react';
+import { Routes, Route, Navigate } from 'react-router';
+import Landing from './pages/Landing';
+import extendedTheme from './theme';
+import DefaultLayout from './components/layouts/DefaultLayout';
+import Loader from './components/Loader';
+import NotFound from './pages/NotFound';
 
-function App() {
+const App = () => {
 	return (
-		<ChakraProvider theme={theme}>
-			<Box textAlign='center' fontSize='xl'>
-				<Grid minH='100vh' p={3}>
-					<ColorModeSwitcher justifySelf='flex-end' />
-					<VStack spacing={0}>
-						<Text>
-							Edit <Code fontSize='xl'>src/App.js</Code> and save to reload.
-						</Text>
-						<Link
-							color='teal.500'
-							href='https://chakra-ui.com'
-							fontSize='2xl'
-							target='_blank'
-							rel='noopener noreferrer'>
-							Learn Chakra
-						</Link>
-					</VStack>
-				</Grid>
-			</Box>
+		<ChakraProvider theme={extendedTheme}>
+			<DefaultLayout>
+				<Routes>
+					<Route path='/'>
+						<Route
+							exact
+							path=''
+							element={
+								<Suspense fallback={<Loader />}>
+									<Landing />
+								</Suspense>
+							}
+						/>
+						<Route exact path='404' element={<NotFound />} />
+						<Route path='*' element={<Navigate to='/404' />} />
+					</Route>
+				</Routes>
+			</DefaultLayout>
 		</ChakraProvider>
 	);
-}
+};
 
 export default App;
