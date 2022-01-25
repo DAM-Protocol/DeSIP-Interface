@@ -6,7 +6,7 @@ import {
 	MenuItem,
 	Image,
 } from '@chakra-ui/react';
-import { BellIcon } from '@chakra-ui/icons';
+import { FaBell } from 'react-icons/fa';
 
 const Notifications = () => {
 	return (
@@ -18,7 +18,7 @@ const Notifications = () => {
 				aria-label={`Notifications`}
 				variant='ghost'
 				color={'current'}
-				icon={<BellIcon />}
+				icon={<FaBell />}
 				_after={{
 					content: '""',
 					display: 'block',
