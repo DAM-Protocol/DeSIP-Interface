@@ -15,7 +15,7 @@ import { RiMenu5Fill } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = (props) => {
-	const bgColor = useColorModeValue('white', 'gray.900');
+	const bgColor = useColorModeValue('whiteAlpha.800', 'blackAlpha.700');
 	const { isOpen, onToggle } = useDisclosure();
 	return (
 		<>
@@ -26,8 +26,10 @@ const Navbar = (props) => {
 				w='100%'
 				p={2}
 				px={4}
-				shadow='sm'
 				bg={bgColor}
+				sx={{
+					backdropFilter: 'blur( 20px )',
+				}}
 				pos={'sticky'}
 				top={0}
 				wrap='wrap'
