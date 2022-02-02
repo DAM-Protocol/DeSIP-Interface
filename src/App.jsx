@@ -6,6 +6,7 @@ import extendedTheme from './theme';
 import DefaultLayout from './components/layouts/DefaultLayout';
 import Loader from './components/Loader';
 import NotFound from './pages/NotFound';
+import Suite from './pages/SuperSuite/Suite';
 
 const App = () => {
 	return (
@@ -19,6 +20,25 @@ const App = () => {
 							element={
 								<Suspense fallback={<Loader />}>
 									<Landing />
+								</Suspense>
+							}
+						/>
+
+						<Route
+							exact
+							path='/super-suite'
+							element={
+								<Suspense fallback={<Loader />}>
+									<Suite />
+								</Suspense>
+							}
+						/>
+						<Route
+							exact
+							path='/super-dHEDGE'
+							element={
+								<Suspense fallback={<Loader />}>
+									<Suite />
 								</Suspense>
 							}
 						/>
