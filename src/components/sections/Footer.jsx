@@ -7,7 +7,7 @@ const Footer = (props) => {
 
 	return (
 		<Flex
-			as='nav'
+			as='footer'
 			align='center'
 			justify='space-between'
 			w='100%'
