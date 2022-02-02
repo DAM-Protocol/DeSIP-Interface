@@ -1,11 +1,11 @@
 import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Flex, Link, useColorModeValue, HStack } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Flex, useColorModeValue, HStack } from '@chakra-ui/react';
 import Notifications from './Notifications';
 import UserMenu from './UserMenu';
+import { ExternalNavLink, NavLink } from './Links';
 
 const Navbar = (props) => {
-	const bgColor = useColorModeValue('white.50', 'gray.900');
+	const bgColor = useColorModeValue('whiteAlpha.800', 'blackAlpha.700');
 
 	return (
 		<Flex
@@ -15,15 +15,18 @@ const Navbar = (props) => {
 			w='100%'
 			p={2}
 			px={4}
-			shadow='sm'
-			bgColor={bgColor}
+			bg={bgColor}
+			sx={{
+				backdropFilter: 'blur( 20px )',
+			}}
 			pos={'sticky'}
-			top={0}>
+			top={0}
+			zIndex={999}>
 			<NavLink to='/'>dSIP</NavLink>
 			<HStack>
 				<NavLink to='/'>Home</NavLink>
-				<NavLink to='/settings'>Super Suite</NavLink>
-				<ExternalLink href='/#'>Docs</ExternalLink>
+				<NavLink to='/super-suite'>Super Suite</NavLink>
+				<ExternalNavLink href='/#'>Docs</ExternalNavLink>
 			</HStack>
 			<HStack>
 				<Notifications />
@@ -33,32 +36,5 @@ const Navbar = (props) => {
 		</Flex>
 	);
 };
-
-const NavLink = ({ children, to }) => (
-	<Link
-		as={RouterLink}
-		p={2.5}
-		to={to}
-		rounded={'md'}
-		_hover={{
-			textDecoration: 'none',
-			bg: useColorModeValue('blackAlpha.50', 'whiteAlpha.200'),
-		}}>
-		{children}
-	</Link>
-);
-const ExternalLink = ({ children, href }) => (
-	<Link
-		p={2.5}
-		href={href}
-		rounded={'md'}
-		isExternal
-		_hover={{
-			textDecoration: 'none',
-			bg: useColorModeValue('blackAlpha.50', 'whiteAlpha.200'),
-		}}>
-		{children}
-	</Link>
-);
 
 export default Navbar;
