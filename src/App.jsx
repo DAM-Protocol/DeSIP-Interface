@@ -26,7 +26,7 @@ const App = () => {
 
 						<Route
 							exact
-							path='/super-suite'
+							path='/Super-Suite'
 							element={
 								<Suspense fallback={<Loader />}>
 									<Suite />

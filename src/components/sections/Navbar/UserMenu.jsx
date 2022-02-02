@@ -28,20 +28,27 @@ const UserMenu = () => {
 				variant={'link'}
 				cursor={'pointer'}
 				minW={0}>
-				<Avatar size={'sm'} src={makeBlockie(user.get('ethAddress'))} />
+				<Avatar
+					size={'sm'}
+					src={makeBlockie(user?.get('ethAddress')) || '0x'}
+				/>
 			</MenuButton>
 			<MenuList alignItems={'center'} boxShadow={'lg'}>
 				<Center>
-					<Avatar size={'xl'} src={makeBlockie(user.get('ethAddress'))} />
+					<Avatar
+						size={'xl'}
+						src={makeBlockie(user?.get('ethAddress') || '0x')}
+					/>
 				</Center>
 				<Center>
 					<Text maxW='10ch' isTruncated>
-						{user.get('ethAddress')}
+						{user?.get('ethAddress')}
 					</Text>
 				</Center>
 				<MenuDivider />
-				<MenuItem>
-					<RouterLink to='/settings'>Settings</RouterLink>
+				<MenuItem as={RouterLink} to='/settings'>
+					{/* <RouterLink to='/settings'>Settings</RouterLink> */}
+					Settings
 				</MenuItem>
 				<MenuItem onClick={() => logout()}>Log Out</MenuItem>
 			</MenuList>
@@ -52,7 +59,7 @@ const UserMenu = () => {
 			variant='outline'
 			colorScheme='red'
 			onClick={() => authenticate()}>
-			Connect Wallet
+			Connect
 		</Button>
 	);
 };

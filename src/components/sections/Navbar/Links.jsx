@@ -1,7 +1,7 @@
 import { Link, useColorModeValue } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
-const NavLink = ({ children, to }) => (
+const NavLink = ({ children, to, ...rest }) => (
 	<Link
 		as={RouterLink}
 		p={2.5}
@@ -10,11 +10,12 @@ const NavLink = ({ children, to }) => (
 		_hover={{
 			textDecoration: 'none',
 			bg: useColorModeValue('blackAlpha.50', 'whiteAlpha.200'),
-		}}>
+		}}
+		{...rest}>
 		{children}
 	</Link>
 );
-const ExternalNavLink = ({ children, href }) => (
+const ExternalLink = ({ children, href, ...rest }) => (
 	<Link
 		p={2.5}
 		href={href}
@@ -23,9 +24,10 @@ const ExternalNavLink = ({ children, href }) => (
 		_hover={{
 			textDecoration: 'none',
 			bg: useColorModeValue('blackAlpha.50', 'whiteAlpha.200'),
-		}}>
+		}}
+		{...rest}>
 		{children}
 	</Link>
 );
 
-export { NavLink, ExternalNavLink };
+export { NavLink, ExternalLink };
