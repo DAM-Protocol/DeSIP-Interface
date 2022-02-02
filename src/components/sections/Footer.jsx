@@ -2,7 +2,7 @@ import { Flex, Link, useColorModeValue, VStack } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
 const Footer = (props) => {
-	const bgColor = useColorModeValue('gray.50', 'gray.900');
+	const bgColor = useColorModeValue('whiteAlpha.300', 'blackAlpha.400');
 	const borderColor = useColorModeValue('gray.200', 'gray.700');
 
 	return (
@@ -13,7 +13,7 @@ const Footer = (props) => {
 			w='100%'
 			p={2}
 			px={4}
-			border='1px'
+			borderTop='1px'
 			borderColor={borderColor}
 			bgColor={bgColor}
 			pos={'sticky'}
