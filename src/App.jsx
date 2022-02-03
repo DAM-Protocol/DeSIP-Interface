@@ -33,22 +33,18 @@ const App = () => {
 const paths = [
 	{
 		path: '/',
-		exact: true,
 		component: lazy(() => import('./pages/Landing')),
 	},
 	{
 		path: '/Super-Suite',
-		exact: true,
 		component: lazy(() => import('./pages/SuperSuite/Suite')),
 	},
 	{
 		path: '/Super-dHEDGE',
-		exact: true,
 		component: lazy(() => import('./pages/DHedge')),
 	},
 	{
 		path: '404',
-		exact: true,
 		component: lazy(() => import('./pages/NotFound')),
 	},
 ];
