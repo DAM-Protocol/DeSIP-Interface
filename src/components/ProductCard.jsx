@@ -8,8 +8,11 @@ import {
 	Stack,
 	Button,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { InternalLink } from './Links';
 
 const ProductCard = ({ title, description, imageURL, chain, disabled }) => {
+	const navigate = useNavigate();
 	return (
 		<Center py={6} minW={'340px'}>
 			<Box
@@ -36,20 +39,23 @@ const ProductCard = ({ title, description, imageURL, chain, disabled }) => {
 						<Text color={'gray.500'}>{description}</Text>
 					</Stack>
 
-					<Button
+					<InternalLink
 						flex={1}
+						fontWeight='bold'
 						fontSize={'sm'}
 						rounded={'full'}
 						px={10}
-						py={3}
-						bg={'blue.400'}
+						py={2.5}
+						bg={disabled ? 'blue.200' : 'blue.400'}
 						color={'white'}
 						_hover={{
-							bg: 'blue.500',
+							bg: disabled ? 'blue.200' : 'blue.500',
 						}}
+						cursor={disabled ? 'not-allowed' : 'pointer'}
+						to={disabled ? '#' : `/${title}`}
 						disabled={disabled}>
 						{disabled ? 'Coming Soon' : 'Invest'}
-					</Button>
+					</InternalLink>
 				</Stack>
 			</Box>
 		</Center>
