@@ -19,9 +19,10 @@ const styles = {
 	global: (props) => ({
 		body: {
 			background: mode(
-				"url('bg-tile-light.png') white",
-				"url('bg-tile-dark.png') black"
+				"url('/bg-tile-light.png')",
+				"url('/bg-tile-dark.png')"
 			)(props),
+			backgroundAttachment: 'fixed',
 		},
 	}),
 };

@@ -4,7 +4,7 @@ import Page from '../components/layouts/Page';
 const Landing = () => {
 	return (
 		<Page>
-			<Heading as='h3' size='lg'>
+			<Heading as='h1' size='2xl'>
 				dSIP
 			</Heading>
 			<Text>Systematic Investments for Your Crypto Assets</Text>
