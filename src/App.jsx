@@ -22,6 +22,7 @@ const App = () => {
 									</Suspense>
 								}></Route>
 						))}
+						{/* <Route path='*' element={<>Not Found</>} /> */}
 						<Route path='*' element={<Navigate to='/404' />} />
 					</Route>
 				</Routes>
