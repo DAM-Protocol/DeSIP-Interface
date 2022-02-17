@@ -1,6 +1,6 @@
 import { Box, Image } from '@chakra-ui/react';
 
-const ProductImage = ({ imageURL }) => {
+const PoolImage = ({ imageURL }) => {
 	return (
 		<Box rounded={'sm'} mt={-12} pos={'relative'} h={20} w={20} mx={'auto'}>
 			<Image
@@ -13,4 +13,4 @@ const ProductImage = ({ imageURL }) => {
 		</Box>
 	);
 };
-export default ProductImage;
+export default PoolImage;
