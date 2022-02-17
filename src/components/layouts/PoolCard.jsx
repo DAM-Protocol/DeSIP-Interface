@@ -84,10 +84,11 @@ const PoolCard = ({ imageURL, children, name }) => {
 					<HStack width={'100%'} justifyContent='space-evenly'>
 						<Button
 							colorScheme='blue'
+							variant='outline'
 							onClick={() => navigate(`/Super-dHEDGE/?pool=df`)}>
 							Stream
 						</Button>
-						<Button>Explore</Button>
+						<Button variant={'unstyled'}>Explore</Button>
 					</HStack>
 				</Flex>
 			</Box>
