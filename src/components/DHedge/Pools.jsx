@@ -1,7 +1,7 @@
 import { Flex, useDisclosure } from '@chakra-ui/react';
 import { useSearchParams } from 'react-router-dom';
 import PoolCard from '../layouts/PoolCard';
-import InvestModal from './InvestModal';
+import InvestModal from './InvestModal/';
 
 const Pools = () => {
 	const { onClose } = useDisclosure();
