@@ -8,6 +8,13 @@ import {
 	Flex,
 	Divider,
 	useColorModeValue,
+	Container,
+	Tabs,
+	TabList,
+	TabPanels,
+	Tab,
+	TabPanel,
+	useMediaQuery,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import CreateStream from './CreateStream';
@@ -19,28 +26,50 @@ const InvestModal = ({ poolData = dummyData, isOpen }) => {
 		navigate(`/Super-dHEDGE/`);
 	};
 
+	const [isViewWidthSmall] = useMediaQuery('(max-width: 768px)');
+
 	return (
 		<Modal
 			isOpen={isOpen}
 			onClose={closeModal}
+			scrollBehavior={'inside'}
 			size='5xl'
 			isCentered
 			blockScrollOnMount>
 			<ModalOverlay />
 			<ModalContent
-				maxHeight='85%'
+				height='80%'
 				bg={useColorModeValue('white', 'brand.darkBg.900')}
 				borderWidth='1px'
 				borderColor={useColorModeValue('gray.200', 'blue.700')}>
 				<ModalHeader textAlign={'center'} fontSize='2xl'>
 					Start Streaming
 				</ModalHeader>
+
 				<ModalCloseButton />
-				<ModalBody py='4' pb='8'>
-					<Flex height={'100%'}>
-						<PoolDetails poolData={poolData} />
-						<CreateStream />
-					</Flex>
+
+				<ModalBody py='4' pb='8' px={{ md: '6', sm: '0' }}>
+					{isViewWidthSmall ? (
+						<Tabs isFitted variant='enclosed-colored' colorScheme='blue'>
+							<TabList mb='1rem'>
+								<Tab>Invest</Tab>
+								<Tab>Pool</Tab>
+							</TabList>
+							<TabPanels>
+								<TabPanel>
+									<CreateStream />
+								</TabPanel>
+								<TabPanel>
+									<PoolDetails poolData={poolData} />
+								</TabPanel>
+							</TabPanels>
+						</Tabs>
+					) : (
+						<Flex height={'100%'}>
+							<PoolDetails poolData={poolData} />
+							<CreateStream />
+						</Flex>
+					)}
 				</ModalBody>
 			</ModalContent>
 		</Modal>
