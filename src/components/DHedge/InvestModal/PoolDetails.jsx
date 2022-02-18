@@ -3,11 +3,9 @@ import { FiExternalLink } from 'react-icons/fi';
 import {
 	Flex,
 	Heading,
-	Center,
 	Box,
 	useColorModeValue,
 	Text,
-	Button,
 	HStack,
 	Table,
 	Thead,
@@ -28,7 +26,7 @@ const PoolDetails = ({ poolData }) => {
 	return (
 		<Flex
 			role={'group'}
-			w={'50%'}
+			w={{ base: '100%', lg: '50%' }}
 			direction='column'
 			justify='space-between'
 			gap='10'
@@ -47,9 +45,11 @@ const PoolDetails = ({ poolData }) => {
 					filter={'drop-shadow(0px 0px 10px #0000001d)'}
 					src={poolData.imageURL}
 				/>
+
 				<Heading textAlign='center' as='h6' fontSize={'lg'} fontWeight={500}>
 					{poolData?.name}
 				</Heading>
+
 				<Text textAlign='center' color={'gray.500'} fontSize='sm'>
 					{poolData?.managerName}
 				</Text>
@@ -60,21 +60,10 @@ const PoolDetails = ({ poolData }) => {
 				<Text as='div' mb='2' textAlign='center'>
 					Assets Supported
 				</Text>
-				<HStack spacing={4} width={{ base: '40ch' }} m='auto'>
-					<Tag
-						size='lg'
-						variant='subtle'
-						colorScheme='blue'
-						borderRadius='full'>
-						<Avatar
-							src='https://app.dhedge.org/static/media/usdc.c8fcab48.svg'
-							size='xs'
-							name='USDC'
-							ml={-1}
-							mr={2}
-						/>
-						<TagLabel>USDC</TagLabel>
-					</Tag>
+				<HStack spacing={4} maxWidth={{ base: '40ch' }} m='auto'>
+					{assets.map((asset) => (
+						<Asset key={asset.name} name={asset.name} icon={asset.icon} />
+					))}
 				</HStack>
 			</Box>
 
@@ -121,7 +110,7 @@ const PoolDetails = ({ poolData }) => {
 
 			<Flex width={'100%'} justifyContent='space-evenly'>
 				<ExternalLink
-					color='blue.700'
+					color={useColorModeValue('blue.700', 'blue.500')}
 					href={`https://app.dhedge.org/pool/${poolData.address}`}>
 					Visit dHEDGE Pool <Icon as={FiExternalLink} />
 				</ExternalLink>
@@ -129,5 +118,23 @@ const PoolDetails = ({ poolData }) => {
 		</Flex>
 	);
 };
+
+const Asset = ({ name, icon }) => (
+	<Tag size='lg' variant='subtle' colorScheme='blue' borderRadius='full'>
+		<Avatar src={icon} size='xs' name={name} ml={-1} mr={2} />
+		<TagLabel>{name}</TagLabel>
+	</Tag>
+);
+
+const assets = [
+	{
+		name: 'BTC',
+		icon: 'https://dhedge.org/assets/images/icons/btc.svg',
+	},
+	{
+		name: 'USDC',
+		icon: 'https://app.dhedge.org/static/media/usdc.c8fcab48.svg',
+	},
+];
 
 export default PoolDetails;
