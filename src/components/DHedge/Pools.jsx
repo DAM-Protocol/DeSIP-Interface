@@ -15,7 +15,23 @@ const Pools = () => {
 		<>
 			<InvestModal poolData={pools?.[pool]} isOpen={pool} onClose={onClose} />
 
-			<Flex wrap={'wrap'} width='auto' justifyContent='space-evenly'>
+			<Box>
+				<InputGroup m='auto' my={10} mb='14' maxWidth='60ch'>
+					<InputLeftElement
+						pointerEvents='none'
+						mt={1}
+						ml={1}
+						children={<Search size={20} fill='gray' />}
+					/>
+					<Input
+						placeholder='Search pools'
+						size='lg'
+						variant='filled'
+						px={15}
+						py={5}
+					/>
+				</InputGroup>
+			</Box>
 				<PoolCard
 					name={'Convex Strategies'}
 					imageURL={
