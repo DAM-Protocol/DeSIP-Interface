@@ -18,7 +18,7 @@ const Footer = (props) => {
 			bgColor={bgColor}
 			pos={'sticky'}
 			top={0}>
-			<NavLink to='/'>dSIP</NavLink>
+			<NavLink to='/'>DeSIP</NavLink>
 			Footer
 			<VStack>
 				<NavLink to='/'>Home</NavLink>

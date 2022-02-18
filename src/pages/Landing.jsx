@@ -5,7 +5,7 @@ const Landing = () => {
 	return (
 		<Page>
 			<Heading as='h1' size='2xl'>
-				dSIP
+				DeSIP
 			</Heading>
 			<Text>Systematic Investments for Your Crypto Assets</Text>
 		</Page>

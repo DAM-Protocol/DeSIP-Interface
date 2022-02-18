@@ -36,7 +36,7 @@ const Navbar = (props) => {
 				zIndex={999}>
 				<NavLink to='/'>
 					<Text fontSize='lg' fontWeight='bold'>
-						dSIP
+						DeSIP
 					</Text>
 				</NavLink>
 
@@ -87,7 +87,7 @@ const MobileNav = ({ onToggle }) => {
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}>
-				<NavLink to='/'>dSIP</NavLink>
+				<NavLink to='/'>DeSIP</NavLink>
 
 				<NavLink
 					to='/'
