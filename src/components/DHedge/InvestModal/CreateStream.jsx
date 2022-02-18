@@ -8,6 +8,9 @@ import {
 	useDisclosure,
 	useColorModeValue,
 	Button,
+	InputGroup,
+	InputLeftElement,
+	Image,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import TokenSelector from './TokenSelector';
@@ -20,7 +23,7 @@ const CreateStream = () => {
 		onClose();
 	};
 	return (
-		<VStack gap='6' width='50%' px='4' borderRadius={'md'}>
+		<VStack gap='6' w={{ base: '100%', lg: '50%' }} px='4' borderRadius={'md'}>
 			<Alert
 				status='warning'
 				borderRadius='md'
@@ -36,15 +39,31 @@ const CreateStream = () => {
 
 			<FormControl>
 				<label htmlFor='supertoken'>Super Token</label>
-				<Input
-					type='text'
-					readOnly
-					id='supertoken'
-					onClick={onOpen}
-					onInput={onOpen}
-					cursor='pointer'
-					value={selectedToken?.symbol}
-				/>
+				<InputGroup>
+					<InputLeftElement
+						pointerEvents='none'
+						mr='6'
+						children={
+							<Image
+								boxSize={'1.25rem'}
+								borderRadius='50%'
+								alt='token'
+								src={selectedToken?.icon}
+								fallbackSrc='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-circle-outline-512.png'
+							/>
+						}
+					/>
+
+					<Input
+						type='text'
+						readOnly
+						id='supertoken'
+						onClick={onOpen}
+						onInput={onOpen}
+						cursor='pointer'
+						value={selectedToken?.symbol}
+					/>
+				</InputGroup>
 			</FormControl>
 
 			<FormControl>
