@@ -30,6 +30,7 @@ const PoolDetails = ({ poolData }) => {
 			direction='column'
 			justify='space-between'
 			gap='10'
+			overflow='auto'
 			px='4'>
 			<VStack
 				pos={'relative'}
@@ -60,7 +61,12 @@ const PoolDetails = ({ poolData }) => {
 				<Text as='div' mb='2' textAlign='center'>
 					Assets Supported
 				</Text>
-				<HStack spacing={4} maxWidth={{ base: '40ch' }} m='auto'>
+				<HStack
+					spacing={4}
+					maxWidth={{ base: '40ch' }}
+					m='auto'
+					wrap='wrap'
+					justify='center'>
 					{assets.map((asset) => (
 						<Asset key={asset.name} name={asset.name} icon={asset.icon} />
 					))}
@@ -120,7 +126,7 @@ const PoolDetails = ({ poolData }) => {
 };
 
 const Asset = ({ name, icon }) => (
-	<Tag size='lg' variant='subtle' colorScheme='blue' borderRadius='full'>
+	<Tag size='lg' variant='subtle' colorScheme='blue' borderRadius='full' my='2'>
 		<Avatar src={icon} size='xs' name={name} ml={-1} mr={2} />
 		<TagLabel>{name}</TagLabel>
 	</Tag>
