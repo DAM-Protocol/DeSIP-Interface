@@ -6,6 +6,7 @@ import {
 	IconButton,
 	VStack,
 	Text,
+	Button,
 } from '@chakra-ui/react';
 import { ColorModeSwitcher } from '../../ColorModeSwitcher';
 import UserMenu from './UserMenu';
@@ -13,10 +14,14 @@ import { ExternalLink, NavLink } from './Links';
 import { VscClose } from 'react-icons/vsc';
 import { RiMenu5Fill } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useChain, useMoralis } from 'react-moralis';
 
 const Navbar = (props) => {
 	const bgColor = useColorModeValue('whiteAlpha.800', 'blackAlpha.700');
 	const { isOpen, onToggle } = useDisclosure();
+	const { switchNetwork, chain } = useChain();
+	const { enableWeb3 } = useMoralis();
+
 	return (
 		<>
 			<Flex
@@ -43,11 +48,23 @@ const Navbar = (props) => {
 				<HStack display={{ base: 'none', sm: 'flex' }}>
 					<NavLink to='/'>Home</NavLink>
 					<NavLink to='/Super-Suite'>Super-Suite</NavLink>
-					<ExternalLink href='https://d-a-m-p.gitbook.io/dsip/'>
+					<NavLink to='/Dashboard'>Dashboard</NavLink>
+					{/* <ExternalLink href='https://d-a-m-p.gitbook.io/dsip/'>
 						Docs
-					</ExternalLink>
+					</ExternalLink> */}
 				</HStack>
 				<HStack>
+					<Button
+						size='md'
+						variant={chain?.chainId === '0x89' ? 'ghost' : 'outline'}
+						colorScheme={chain?.chainId === '0x89' ? 'green' : 'red'}
+						onClick={() => (chain ? switchNetwork('0x89') : enableWeb3())}>
+						{chain
+							? chain?.chainId === '0x89'
+								? 'Polygon'
+								: 'Wrong Network'
+							: 'Connect Wallet'}
+					</Button>
 					<ColorModeSwitcher />
 					<UserMenu />
 					<IconButton
@@ -104,6 +121,14 @@ const MobileNav = ({ onToggle }) => {
 					textAlign='center'
 					onClick={onToggle}>
 					Super-Suite
+				</NavLink>
+				<NavLink
+					to='/Dashboard'
+					display='block'
+					width='100%'
+					textAlign='center'
+					onClick={onToggle}>
+					Dashboard
 				</NavLink>
 				<ExternalLink
 					href='https://d-a-m-p.gitbook.io/dsip/'

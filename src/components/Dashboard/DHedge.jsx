@@ -1,113 +1,127 @@
 import {
-	Table,
-	Thead,
-	Tbody,
-	Tr,
-	Th,
-	Td,
-	Tooltip,
 	Tag,
 	Text,
 	Box,
-	useDisclosure,
 	useColorModeValue,
 	Grid,
-	GridItem,
+	Td,
+	AccordionItem,
+	Accordion,
+	Table,
+	Th,
+	Tr,
+	Tbody,
+	Thead,
+	AccordionPanel,
+	AccordionButton,
+	AccordionIcon,
 } from '@chakra-ui/react';
+
+const DashboardHeader = ({ name }) => {
+	return (
+		<Text opacity='0.7' fontWeight={'bold'} as='div' align='center'>
+			{name}
+		</Text>
+	);
+};
+
+const headers = [
+	'Pool',
+	'Balance',
+	'Price (USD)',
+	'Performance',
+	// 'Last Deposited',
+];
 
 const DHedge = () => {
 	return (
 		<Box overflowX='auto'>
-			<Table
-				sx={{
-					borderCollapse: 'separate',
-					borderSpacing: '0 15px',
-				}}>
-				<Thead>
-					<Tr>
-						<Th w='3ch'>#</Th>
-						<Th>Pool</Th>
-						<Th>Balance</Th>
-						<Th>Price</Th>
-						<Th>Performance</Th>
-						<Th w='20ch'>
-							<Tooltip
-								label='Last time stream tokens were deposited'
-								placement='top'
-								hasArrow
-								aria-label='Last deposited'>
-								<Text as='span'>Last deposited</Text>
-							</Tooltip>
-						</Th>
-					</Tr>
-				</Thead>
+			<Grid
+				mx='auto'
+				templateColumns={'3ch 25ch 15ch 15ch 20ch'}
+				gap='4'
+				py='4'
+				width={'fit-content'}>
+				<span></span>
+				{headers.map((header, index) => (
+					<DashboardHeader key={index} name={header} />
+				))}
+			</Grid>
 
-				<PoolTableBody />
-			</Table>
+			<Accordion allowMultiple width={'fit-content'} mx='auto'>
+				<PoolTableItem />
+				<PoolTableItem />
+				<PoolTableItem />
+				<PoolTableItem />
+			</Accordion>
 		</Box>
-	);
-};
-const PoolTableBody = () => {
-	return (
-		<Tbody>
-			<PoolTableItem />
-			<PoolTableItem />
-			<PoolTableItem />
-			<PoolTableItem />
-		</Tbody>
 	);
 };
 
 const PoolTableItem = () => {
-	const { isOpen, onOpen, onClose } = useDisclosure();
-	const bg = useColorModeValue(
-		isOpen && 'blackAlpha.100',
-		isOpen && 'whiteAlpha.100'
-	);
+	const border = {
+		borderWidth: '1px',
+		borderRadius: '10',
+		borderStyle: 'solid',
+		borderColor: useColorModeValue('gray.200', 'blue.800'),
+		borderBottom: '1px solid',
+		borderBottomColor: useColorModeValue('gray.200', 'blue.800'),
+	};
+
 	return (
-		<>
-			<Tr
-				bg={bg}
-				onClick={() => (isOpen ? onClose() : onOpen())}
-				cursor='pointer'
-				_hover={{
-					bg: useColorModeValue('blackAlpha.50', 'whiteAlpha.50'),
-				}}>
-				<Td>1</Td>
-				<Td>Convex Strategies</Td>
-				<Td>1,000,000 CST</Td>
-				<Td>$1.00</Td>
-				<Td>
-					<Tag variant={'outline'} colorScheme='green' mr='1'>
-						D: +10%
-					</Tag>
-					<Tag variant={'outline'} colorScheme='red'>
-						Y: -5%
-					</Tag>
-				</Td>
-				<Td isNumeric>14/02/2022</Td>
-			</Tr>
-			{isOpen && (
-				<Tr bg={bg} position='relative'>
-					<Td colSpan={'6'}>
-						<Grid templateRows='' rowGap='4' textAlign='center'>
-							<Grid templateColumns={'repeat(4,1fr)'}>
-								<GridItem>Asset</GridItem>
-								<GridItem>Streamed</GridItem>
-								<GridItem>Uninvested</GridItem>
-								<GridItem>Controls</GridItem>
-							</Grid>
-							<Grid templateColumns={'repeat(4,1fr)'}>
-								<GridItem>USDCx</GridItem>
-								<GridItem>1000</GridItem>
-								<GridItem>50</GridItem>
-								<GridItem>Stop | Edit</GridItem>
-							</Grid>
-						</Grid>
-					</Td>
-				</Tr>
-			)}
-		</>
+		<AccordionItem
+			{...border}
+			my='2'
+			bg={useColorModeValue('whiteAlpha.500', 'blackAlpha.400')}>
+			<AccordionButton width={'fit-content'} py='4'>
+				<Grid templateColumns={'3ch 25ch 15ch 15ch 20ch'} gap='4'>
+					<AccordionIcon />
+
+					<Text>Convex Strategies</Text>
+					<Text>1,000,000 CST</Text>
+					<Text>$1.00</Text>
+					<Text>
+						<Tag variant={'outline'} colorScheme='green' mr='1'>
+							D: +10%
+						</Tag>
+						<Tag variant={'outline'} colorScheme='red'>
+							Y: -5%
+						</Tag>
+					</Text>
+					{/* <Text>14/02/2022</Text> */}
+				</Grid>
+			</AccordionButton>
+
+			<AccordionPanel pl='6ch' borderRadius='10'>
+				<Table size='sm' variant='unstyled'>
+					<Thead>
+						<Tr>
+							<Th textAlign='center'>Asset</Th>
+							<Th textAlign='center'>Rate</Th>
+							<Th textAlign='center'>Streamed</Th>
+							<Th textAlign='center'>Uninvested</Th>
+							<Th textAlign='center'>Controls</Th>
+						</Tr>
+					</Thead>
+					<Tbody>
+						<Tr>
+							<Td textAlign='center'>USDCx</Td>
+							<Td textAlign='center'>50</Td>
+							<Td textAlign='center'>1000</Td>
+							<Td textAlign='center'>50</Td>
+							<Td textAlign='center'>Stop | Edit</Td>
+						</Tr>
+						<Tr>
+							<Td textAlign='center'>USDTx</Td>
+							<Td textAlign='center'>40</Td>
+							<Td textAlign='center'>40</Td>
+							<Td textAlign='center'>500</Td>
+							<Td textAlign='center'>Stop | Edit</Td>
+						</Tr>
+					</Tbody>
+				</Table>
+			</AccordionPanel>
+		</AccordionItem>
 	);
 };
 
