@@ -45,6 +45,10 @@ const paths = [
 		component: lazy(() => import('./pages/DHedge')),
 	},
 	{
+		path: '/Dashboard',
+		component: lazy(() => import('./pages/Dashboard')),
+	},
+	{
 		path: '404',
 		component: lazy(() => import('./pages/NotFound')),
 	},
