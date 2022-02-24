@@ -18,10 +18,11 @@ import { useNavigate } from 'react-router-dom';
 import CreateStream from './CreateStream';
 import PoolDetails from './PoolDetails';
 
-const InvestModal = ({ poolData = dummyData, isOpen }) => {
+const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 	const navigate = useNavigate();
 	const closeModal = () => {
-		navigate(`/Super-dHEDGE/`);
+		if (onClose) onClose();
+		else navigate(`/Super-dHEDGE/`);
 	};
 
 	const [isViewWidthSmall] = useMediaQuery('(max-width: 768px)');
@@ -41,7 +42,7 @@ const InvestModal = ({ poolData = dummyData, isOpen }) => {
 				borderWidth='1px'
 				borderColor={useColorModeValue('gray.200', 'blue.700')}>
 				<ModalHeader textAlign={'center'} fontSize='2xl'>
-					Start Streaming
+					Start New Stream
 				</ModalHeader>
 
 				<ModalCloseButton />
