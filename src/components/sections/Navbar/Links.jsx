@@ -1,8 +1,9 @@
-import { Link, useColorModeValue } from '@chakra-ui/react';
+import { forwardRef, Link, useColorModeValue } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
-const NavLink = ({ children, to, ...rest }) => (
+const NavLink = forwardRef(({ children, to, ...rest }, ref) => (
 	<Link
+		ref={ref}
 		as={RouterLink}
 		p={2.5}
 		to={to}
@@ -14,8 +15,8 @@ const NavLink = ({ children, to, ...rest }) => (
 		{...rest}>
 		{children}
 	</Link>
-);
-const ExternalLink = ({ children, href, ...rest }) => (
+));
+const ExternalLink = forwardRef(({ children, href, ...rest }, ref) => (
 	<Link
 		p={2.5}
 		href={href}
@@ -28,6 +29,6 @@ const ExternalLink = ({ children, href, ...rest }) => (
 		{...rest}>
 		{children}
 	</Link>
-);
+));
 
 export { NavLink, ExternalLink };

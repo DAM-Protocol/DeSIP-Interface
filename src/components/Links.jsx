@@ -1,15 +1,15 @@
-import { Link } from '@chakra-ui/react';
+import { forwardRef, Link } from '@chakra-ui/react';
 import { Link as ReactLink } from 'react-router-dom';
 
-const InternalLink = ({ children, to, ...rest }) => (
-	<Link as={ReactLink} to={to || '/'} {...rest}>
+const InternalLink = forwardRef(({ children, to, ...rest }, ref) => (
+	<Link as={ReactLink} to={to || '/'} ref={ref} {...rest}>
 		{children}
 	</Link>
-);
-const ExternalLink = ({ children, href, ...rest }) => (
+));
+const ExternalLink = forwardRef(({ children, href, ...rest }, ref) => (
 	<Link href={href} isExternal {...rest}>
 		{children}
 	</Link>
-);
+));
 
 export { InternalLink, ExternalLink };
