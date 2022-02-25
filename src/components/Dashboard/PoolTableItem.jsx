@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import InvestModal from '../DHedge/InvestModal';
+import { ExternalLink } from '../Links';
 import PoolTablePanel from './PoolTablePanel';
 
 const PoolTableItem = ({ poolData }) => {
@@ -50,12 +51,22 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 	return (
 		<AccordionButton py='10' _hover={{ background: 'none' }}>
 			<Grid
-				templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat( 4, 1fr)' }}
+				w='full'
+				templateColumns={{
+					base: 'repeat(2, 1fr)',
+					md: '1.5fr repeat( 3, 1fr)',
+				}}
 				gap='4'
 				rowGap='8'
 				alignItems={{ base: 'end' }}
 				m='auto'>
-				<Stack spacing='2' align='center' direction={['column', 'row', 'row']}>
+				{/* Pool Image, Name and Invest Button */}
+				<Stack
+					spacing='2'
+					justify='center'
+					align='center'
+					direction={['column', 'row', 'row']}
+					alignSelf={{ base: 'end', md: 'center' }}>
 					<Image
 						boxSize='16'
 						rounded={'md'}
@@ -65,11 +76,21 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 							'https://pbs.twimg.com/profile_images/1434774151340773384/ypAN0vSP_200x200.jpg'
 						}
 					/>
-					<Button fontWeight='medium' variant='ghost' onClick={onOpen}>
-						Convex Strategies
-					</Button>
+					<VStack>
+						<ExternalLink
+							href={`https://app.dhedge.org/pool/${poolData?.address}`}>
+							{poolData?.name || 'Convex Strategies'}
+						</ExternalLink>
+						<Button
+							variant='ghost'
+							onClick={(e) => e.preventDefault() || onOpen()}
+							size='sm'>
+							Invest
+						</Button>
+					</VStack>
 				</Stack>
 
+				{/* Pool Token Balance */}
 				<VStack spacing='1'>
 					<Text as='span' fontSize='sm' opacity='0.7'>
 						$150
@@ -81,7 +102,6 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 						Balance
 						<Tooltip
 							label={`Balance Pool Super Tokens ${poolData?.poolTokenSymbol}`}
-							placement='top'
 							hasArrow
 							aria-label={`Balance Pool Super Tokens ${poolData?.poolTokenSymbol}`}>
 							<Flex as='span' ml='2'>
@@ -91,6 +111,7 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 					</Flex>
 				</VStack>
 
+				{/* Total Value Streaming */}
 				<VStack spacing='1'>
 					<Text as='span' fontWeight='medium'>
 						$140k
@@ -99,7 +120,6 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 						TVS
 						<Tooltip
 							label='Total Value Streaming'
-							placement='top'
 							hasArrow
 							aria-label='Total Value Streaming'>
 							<Flex as='span' ml='2'>
@@ -109,7 +129,8 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 					</Flex>
 				</VStack>
 
-				<VStack spacing='1'>
+				{/* Performance Metrics */}
+				<VStack spacing='1' alignSelf={{ base: 'end', md: 'center' }}>
 					<HStack justify='center' spacing='2'>
 						<Tag variant='outline' p='4' py='2' colorScheme='green'>
 							+10%
