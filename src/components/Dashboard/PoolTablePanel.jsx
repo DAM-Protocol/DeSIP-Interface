@@ -10,12 +10,14 @@ import {
 	Button,
 	Icon,
 	Text,
+	Divider,
 } from '@chakra-ui/react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 const PoolTablePanel = ({ poolAssets }) => {
 	return (
 		<AccordionPanel borderRadius='10' pt='6' overflow='scroll'>
+			<Divider mb='4' mt='-6' />
 			<Table size='sm' variant='unstyled'>
 				<Thead>
 					<Tr>
