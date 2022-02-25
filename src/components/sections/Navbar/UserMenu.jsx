@@ -1,9 +1,6 @@
 import { useMoralis } from 'react-moralis';
 import makeBlockie from 'ethereum-blockies-base64';
 import {
-	Flex,
-	Link,
-	useColorModeValue,
 	Avatar,
 	Button,
 	Menu,
@@ -12,13 +9,19 @@ import {
 	MenuItem,
 	MenuDivider,
 	Center,
-	HStack,
+	useColorMode,
+	useColorModeValue,
 	Text,
+	Icon,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 const UserMenu = () => {
 	const { user, authenticate, logout } = useMoralis();
+	const { toggleColorMode } = useColorMode();
+	const text = useColorModeValue('dark', 'light');
+	const SwitchIcon = useColorModeValue(FaMoon, FaSun);
 
 	return user ? (
 		<Menu>
@@ -45,7 +48,15 @@ const UserMenu = () => {
 						{user?.get('ethAddress')}
 					</Text>
 				</Center>
+
 				<MenuDivider />
+
+				<MenuItem
+					aria-label={`Switch to ${text} mode`}
+					onClick={toggleColorMode}>
+					Switch Mode <Icon ml='4' as={SwitchIcon} fontSize='sm' />
+				</MenuItem>
+
 				<MenuItem as={RouterLink} to='/settings'>
 					{/* <RouterLink to='/settings'>Settings</RouterLink> */}
 					Settings

@@ -6,39 +6,60 @@ import {
 	Tbody,
 	Thead,
 	AccordionPanel,
+	Badge,
+	Button,
+	Icon,
+	Text,
 } from '@chakra-ui/react';
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
-const PoolTablePanel = ({}) => {
+const PoolTablePanel = ({ poolAssets }) => {
 	return (
 		<AccordionPanel borderRadius='10' pt='6' overflow='scroll'>
 			<Table size='sm' variant='unstyled'>
 				<Thead>
 					<Tr>
 						<Th textAlign='center'>Asset</Th>
-						<Th textAlign='center'>Rate</Th>
+						<Th textAlign='center'>
+							Rate{' '}
+							<Text as='sub' opacity='0.7'>
+								(/month)
+							</Text>{' '}
+						</Th>
 						<Th textAlign='center'>Streamed</Th>
 						<Th textAlign='center'>Uninvested</Th>
 						<Th textAlign='center'>Controls</Th>
 					</Tr>
 				</Thead>
 				<Tbody>
-					<Tr>
-						<Td textAlign='center'>USDCx</Td>
-						<Td textAlign='center'>50</Td>
-						<Td textAlign='center'>1000</Td>
-						<Td textAlign='center'>50</Td>
-						<Td textAlign='center'>Stop | Edit</Td>
-					</Tr>
-					<Tr>
-						<Td textAlign='center'>USDTx</Td>
-						<Td textAlign='center'>40</Td>
-						<Td textAlign='center'>40</Td>
-						<Td textAlign='center'>500</Td>
-						<Td textAlign='center'>Stop | Edit</Td>
-					</Tr>
+					<AssetRow assetData={poolAssets?.assetData} />
+					<AssetRow assetData={poolAssets?.assetData} />
 				</Tbody>
 			</Table>
 		</AccordionPanel>
+	);
+};
+
+const AssetRow = () => {
+	return (
+		<Tr>
+			<Td textAlign='center'>
+				<Badge borderRadius={'sm'} p='2' colorScheme='red'>
+					USDTx
+				</Badge>
+			</Td>
+			<Td textAlign='center'>40</Td>
+			<Td textAlign='center'>40</Td>
+			<Td textAlign='center'>500</Td>
+			<Td textAlign='center'>
+				<Button variant='ghost' colorScheme='yellow' p='2'>
+					<Icon as={AiOutlineEdit}></Icon>
+				</Button>{' '}
+				<Button variant='ghost' colorScheme='red' p='2'>
+					<Icon as={AiOutlineDelete}></Icon>
+				</Button>
+			</Td>
+		</Tr>
 	);
 };
 

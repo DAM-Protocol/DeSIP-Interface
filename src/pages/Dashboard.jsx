@@ -12,7 +12,7 @@ import Page from '../components/layouts/Page';
 
 const Dashboard = () => {
 	return (
-		<Page>
+		<Page px={{ base: '0.25rem', md: '1.5rem' }}>
 			<Box>
 				<Heading as='h2' size='xl' mb='8' textAlign='center'>
 					Dashboard

@@ -52,15 +52,17 @@ const PRODUCTS = [
 		title: 'super-Enzyme',
 		description: (
 			<>
-				Stream into Synths in two clicks
+				Stream into Enzyme
 				<br />
 				<br />
-				Capture the price movements of popular cryptocurrencies, fiat
-				currencies, stocks, commodities and more with zero slippage.
+				Find a vault with a proven track record on Enzyme, and free yourself
+				from the day-to-day hassles whilst retaining full custody of your
+				assets.
 			</>
 		),
-		imageURL: 'https://d19czvic2hcumt.cloudfront.net/content/2020/11/291.jpg',
-		chain: 'Chain',
+		imageURL:
+			'https://www.cryptoninjas.net/wp-content/uploads/enzyme-cryptoninjas.jpg',
+		chain: 'Polygon',
 		disabled: true,
 	},
 ];

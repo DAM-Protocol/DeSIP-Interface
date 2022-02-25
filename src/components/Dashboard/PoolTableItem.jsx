@@ -38,7 +38,7 @@ const PoolTableItem = ({ poolData }) => {
 				{...border}
 				my='6'
 				bg={useColorModeValue('whiteAlpha.500', 'blackAlpha.400')}>
-				<PoolTableButton onOpen={onOpen} poolData={poolData} />
+				<PoolAccordionButton onOpen={onOpen} poolData={poolData} />
 
 				<PoolTablePanel></PoolTablePanel>
 			</AccordionItem>
@@ -46,14 +46,14 @@ const PoolTableItem = ({ poolData }) => {
 	);
 };
 
-const PoolTableButton = ({ onOpen, poolData }) => {
+const PoolAccordionButton = ({ onOpen, poolData }) => {
 	return (
 		<AccordionButton py='10' _hover={{ background: 'none' }}>
 			<Grid
 				templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat( 4, 1fr)' }}
 				gap='4'
 				rowGap='8'
-				alignItems={{ base: 'end', md: 'center' }}
+				alignItems={{ base: 'end' }}
 				m='auto'>
 				<Stack spacing='2' align='center' direction={['column', 'row', 'row']}>
 					<Image
@@ -109,14 +109,19 @@ const PoolTableButton = ({ onOpen, poolData }) => {
 					</Flex>
 				</VStack>
 
-				<HStack justify='center' spacing='2'>
-					<Tag variant={'outline'} colorScheme='green'>
-						D: +10%
-					</Tag>
-					<Tag variant={'outline'} colorScheme='red'>
-						Y: -5%
-					</Tag>
-				</HStack>
+				<VStack spacing='1'>
+					<HStack justify='center' spacing='2'>
+						<Tag variant='outline' p='4' py='2' colorScheme='green'>
+							+10%
+							<br />
+							Day
+						</Tag>
+						<Tag variant='outline' p='4' py='2' colorScheme='red'>
+							-5% <br />
+							Year
+						</Tag>
+					</HStack>
+				</VStack>
 			</Grid>
 		</AccordionButton>
 	);

@@ -1,5 +1,5 @@
 import {
-	Flex,
+	Grid,
 	InputGroup,
 	InputLeftElement,
 	useDisclosure,
@@ -21,7 +21,7 @@ const Pools = () => {
 
 	return (
 		<>
-			<InvestModal poolData={pools?.[pool]} isOpen={pool} onClose={onClose} />
+			<InvestModal poolData={pools?.[pool]} isOpen={pool} />
 
 			<Box>
 				<InputGroup m='auto' my={10} mb='14' maxWidth='60ch'>
@@ -40,13 +40,57 @@ const Pools = () => {
 					/>
 				</InputGroup>
 			</Box>
+
+			<Grid templateColumns={'repeat(auto-fit, minmax(18rem, 1fr));'} gap={'4'}>
 				<PoolCard
 					name={'Convex Strategies'}
 					imageURL={
 						'https://pbs.twimg.com/profile_images/1434774151340773384/ypAN0vSP_200x200.jpg'
 					}
 				/>
-			</Flex>
+				<PoolCard
+					name={'Convex Strategies'}
+					imageURL={
+						'https://pbs.twimg.com/profile_images/1434774151340773384/ypAN0vSP_200x200.jpg'
+					}
+				/>
+				<PoolCard
+					name={'Convex Strategies'}
+					imageURL={
+						'https://pbs.twimg.com/profile_images/1434774151340773384/ypAN0vSP_200x200.jpg'
+					}
+				/>
+				<PoolCard
+					name={'Convex Strategies'}
+					imageURL={
+						'https://pbs.twimg.com/profile_images/1434774151340773384/ypAN0vSP_200x200.jpg'
+					}
+				/>
+				<PoolCard
+					name={'Convex Strategies'}
+					imageURL={
+						'https://pbs.twimg.com/profile_images/1434774151340773384/ypAN0vSP_200x200.jpg'
+					}
+				/>
+				<PoolCard
+					name={'Convex Strategies'}
+					imageURL={
+						'https://pbs.twimg.com/profile_images/1434774151340773384/ypAN0vSP_200x200.jpg'
+					}
+				/>
+				<PoolCard
+					name={'Convex Strategies'}
+					imageURL={
+						'https://pbs.twimg.com/profile_images/1434774151340773384/ypAN0vSP_200x200.jpg'
+					}
+				/>
+				<PoolCard
+					name={'Convex Strategies'}
+					imageURL={
+						'https://pbs.twimg.com/profile_images/1434774151340773384/ypAN0vSP_200x200.jpg'
+					}
+				/>
+			</Grid>
 		</>
 	);
 };
