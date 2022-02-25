@@ -41,6 +41,10 @@ const paths = [
 		component: lazy(() => import('./pages/SuperSuite/Suite')),
 	},
 	{
+		path: '/Super-dHEDGE/:poolAddress',
+		component: lazy(() => import('./pages/DHedge/SuperPool')),
+	},
+	{
 		path: '/Super-dHEDGE',
 		component: lazy(() => import('./pages/DHedge')),
 	},

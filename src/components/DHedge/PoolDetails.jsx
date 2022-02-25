@@ -1,11 +1,10 @@
-import { ExternalLink } from '../../Links';
+import { ExternalLink } from '../Links';
 import { FiExternalLink } from 'react-icons/fi';
 import {
+	Text,
 	Flex,
-	Heading,
 	Box,
 	useColorModeValue,
-	Text,
 	HStack,
 	Table,
 	Thead,
@@ -15,29 +14,34 @@ import {
 	Td,
 	Tooltip,
 	Icon,
-	Tag,
 	Image,
-	TagLabel,
-	Avatar,
 	VStack,
+	Heading,
 } from '@chakra-ui/react';
+import AssetTag from '../AssetTag';
 
 const PoolDetails = ({ poolData }) => {
 	return (
 		<Flex
-			role={'group'}
-			w={{ base: '100%', lg: '50%' }}
+			mb='6'
+			w={{ base: '100%', md: '50%' }}
 			direction='column'
 			justify='space-between'
+			align='center'
 			gap='10'
 			overflow='auto'
-			px='4'>
+			px='4'
+			alignSelf='center'>
 			<VStack
 				pos={'relative'}
-				w={'100%'}
+				maxW={'100%'}
 				spacing={2}
 				direction='column'
 				align={'center'}>
+				<Heading textAlign='center' as='h6' fontSize={'xl'} fontWeight={500}>
+					{poolData?.name}
+				</Heading>
+
 				<Image
 					rounded={'full'}
 					h={24}
@@ -46,10 +50,6 @@ const PoolDetails = ({ poolData }) => {
 					filter={'drop-shadow(0px 0px 10px #0000001d)'}
 					src={poolData.imageURL}
 				/>
-
-				<Heading textAlign='center' as='h6' fontSize={'lg'} fontWeight={500}>
-					{poolData?.name}
-				</Heading>
 
 				<Text textAlign='center' color={'gray.500'} fontSize='sm'>
 					{poolData?.managerName}
@@ -67,8 +67,8 @@ const PoolDetails = ({ poolData }) => {
 					m='auto'
 					wrap='wrap'
 					justify='center'>
-					{assets.map((asset) => (
-						<Asset key={asset.name} name={asset.name} icon={asset.icon} />
+					{poolData.assets.map((asset) => (
+						<AssetTag key={asset.name} name={asset.name} icon={asset.icon} />
 					))}
 				</HStack>
 			</Box>
@@ -76,6 +76,7 @@ const PoolDetails = ({ poolData }) => {
 			<Flex
 				gap={8}
 				width={'100%'}
+				maxW='50ch'
 				justify='space-between'
 				flexDirection='column'
 				align={'center'}>
@@ -124,23 +125,4 @@ const PoolDetails = ({ poolData }) => {
 		</Flex>
 	);
 };
-
-const Asset = ({ name, icon }) => (
-	<Tag size='lg' variant='subtle' colorScheme='blue' borderRadius='full' my='2'>
-		<Avatar src={icon} size='xs' name={name} ml={-1} mr={2} />
-		<TagLabel>{name}</TagLabel>
-	</Tag>
-);
-
-const assets = [
-	{
-		name: 'BTC',
-		icon: 'https://dhedge.org/assets/images/icons/btc.svg',
-	},
-	{
-		name: 'USDC',
-		icon: 'https://app.dhedge.org/static/media/usdc.c8fcab48.svg',
-	},
-];
-
 export default PoolDetails;

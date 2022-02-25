@@ -13,10 +13,11 @@ import {
 	Tab,
 	TabPanel,
 	useMediaQuery,
+	Box,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import CreateStream from './CreateStream';
-import PoolDetails from './PoolDetails';
+import PoolDetails from '../PoolDetails';
 
 const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 	const navigate = useNavigate();
@@ -57,7 +58,9 @@ const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 
 							<TabPanels>
 								<TabPanel>
-									<CreateStream />
+									<Box w='100%'>
+										<CreateStream />
+									</Box>
 								</TabPanel>
 
 								<TabPanel>
@@ -68,7 +71,9 @@ const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 					) : (
 						<Flex height={'100%'}>
 							<PoolDetails poolData={poolData} />
-							<CreateStream />
+							<Box w='50%'>
+								<CreateStream />
+							</Box>
 						</Flex>
 					)}
 				</ModalBody>
@@ -97,6 +102,16 @@ const dummyData = {
 		week: '1000262012357288639',
 		halfyear: '1553159587044043575',
 	},
+	assets: [
+		{
+			name: 'BTC',
+			icon: 'https://dhedge.org/assets/images/icons/btc.svg',
+		},
+		{
+			name: 'USDC',
+			icon: 'https://app.dhedge.org/static/media/usdc.c8fcab48.svg',
+		},
+	],
 };
 
 export default InvestModal;

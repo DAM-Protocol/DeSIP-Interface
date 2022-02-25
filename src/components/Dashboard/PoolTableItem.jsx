@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import InvestModal from '../DHedge/InvestModal';
-import { ExternalLink } from '../Links';
+import { ExternalLink, InternalLink } from '../Links';
 import PoolTablePanel from './PoolTablePanel';
 
 const PoolTableItem = ({ poolData }) => {
@@ -77,10 +77,9 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 						}
 					/>
 					<VStack>
-						<ExternalLink
-							href={`https://app.dhedge.org/pool/${poolData?.address}`}>
+						<InternalLink to={`/Super-dHEDGE/${poolData?.address}`}>
 							{poolData?.name || 'Convex Strategies'}
-						</ExternalLink>
+						</InternalLink>
 						<Button
 							variant='ghost'
 							onClick={(e) => e.preventDefault() || onOpen()}
