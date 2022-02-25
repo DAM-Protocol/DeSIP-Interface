@@ -54,10 +54,12 @@ const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 								<Tab>Invest</Tab>
 								<Tab>Pool</Tab>
 							</TabList>
+
 							<TabPanels>
 								<TabPanel>
 									<CreateStream />
 								</TabPanel>
+
 								<TabPanel>
 									<PoolDetails poolData={poolData} />
 								</TabPanel>
