@@ -7,6 +7,10 @@ import {
 	VStack,
 	Text,
 	Button,
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+	Stack,
 } from '@chakra-ui/react';
 import { ColorModeSwitcher } from '../../ColorModeSwitcher';
 import UserMenu from './UserMenu';
@@ -54,7 +58,26 @@ const Navbar = (props) => {
 
 				<HStack display={{ base: 'none', sm: 'flex' }}>
 					<NavLink to='/'>Home</NavLink>
-					<NavLink to='/Super-Suite'>Super-Suite</NavLink>
+
+					<Popover trigger={'hover'} placement={'bottom-start'}>
+						<PopoverTrigger>
+							<NavLink to='/Super-Suite'>Super-Suite</NavLink>
+						</PopoverTrigger>
+
+						<PopoverContent
+							border={0}
+							boxShadow={'md'}
+							p={4}
+							rounded={'md'}
+							bg={useColorModeValue('white', 'black')}>
+							<VStack>
+								<NavLink w='full' to='/Super-dHEDGE'>
+									Super-dHEDGE
+								</NavLink>
+							</VStack>
+						</PopoverContent>
+					</Popover>
+
 					<NavLink to='/Dashboard'>Dashboard</NavLink>
 					<ExternalLink href='https://d-a-m-p.gitbook.io/dsip/'>
 						Docs
