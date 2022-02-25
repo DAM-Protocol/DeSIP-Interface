@@ -23,7 +23,7 @@ const CreateStream = () => {
 		onClose();
 	};
 	return (
-		<VStack gap='6' w={{ base: '100%', lg: '50%' }} px='4' borderRadius={'md'}>
+		<VStack gap='6' w='100%' px='4' borderRadius={'md'}>
 			<Alert
 				status='warning'
 				borderRadius='md'
@@ -56,10 +56,14 @@ const CreateStream = () => {
 
 					<Input
 						type='text'
-						readOnly
 						id='supertoken'
 						onClick={onOpen}
-						onInput={onOpen}
+						onKeyUp={(e) =>
+							e.key !== 'Tab' &&
+							e.key !== 'Shift' &&
+							e.key !== 'Escape' &&
+							onOpen()
+						}
 						cursor='pointer'
 						value={selectedToken?.symbol}
 					/>
