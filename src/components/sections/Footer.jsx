@@ -1,5 +1,13 @@
-import { Flex, Link, useColorModeValue, VStack } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import {
+	Flex,
+	HStack,
+	Spacer,
+	useColorModeValue,
+	Icon,
+} from '@chakra-ui/react';
+import { ColorModeSwitcher } from '../ColorModeSwitcher';
+import { ExternalLink, InternalLink } from '../Links';
+import { FaGithub } from 'react-icons/fa';
 
 const Footer = (props) => {
 	const bgColor = useColorModeValue('whiteAlpha.300', 'blackAlpha.400');
@@ -9,37 +17,43 @@ const Footer = (props) => {
 		<Flex
 			as='footer'
 			align='center'
-			justify='space-between'
+			// justify='space-between'
 			w='100%'
-			p={2}
+			p={10}
 			px={4}
 			borderTop='1px'
 			borderColor={borderColor}
 			bgColor={bgColor}
 			pos={'sticky'}
 			top={0}>
-			<NavLink to='/'>DeSIP</NavLink>
-			Footer
-			<VStack>
-				<NavLink to='/'>Home</NavLink>
-				<NavLink to='/about'>About</NavLink>
-			</VStack>
+			<HStack spacing='6' wrap='wrap'>
+				<InternalLink fontWeight='medium' to='/'>
+					Home
+				</InternalLink>
+				<InternalLink fontWeight='medium' to='/Super-Suite'>
+					Super Suite
+				</InternalLink>
+				<InternalLink fontWeight='medium' to='/Super-dHEDGE'>
+					Super-dHEDGE
+				</InternalLink>
+
+				<ExternalLink
+					fontWeight='medium'
+					href='https://d-a-m-p.gitbook.io/dsip/'>
+					Docs
+				</ExternalLink>
+			</HStack>
+
+			<Spacer></Spacer>
+			<ExternalLink
+				href='https://github.com/DAM-Protocol'
+				display='flex'
+				align='center'>
+				<Icon as={FaGithub} fontSize='xl' />
+			</ExternalLink>
+			<ColorModeSwitcher size='xl' fontSize='xl' ml='4' />
 		</Flex>
 	);
 };
-
-const NavLink = ({ children, to }) => (
-	<Link
-		as={RouterLink}
-		p={2.5}
-		to={to}
-		rounded={'md'}
-		_hover={{
-			textDecoration: 'none',
-			bg: useColorModeValue('blackAlpha.50', 'whiteAlpha.200'),
-		}}>
-		{children}
-	</Link>
-);
 
 export default Footer;
