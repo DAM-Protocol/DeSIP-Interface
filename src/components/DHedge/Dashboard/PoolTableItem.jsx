@@ -16,8 +16,8 @@ import {
 	Button,
 } from '@chakra-ui/react';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
-import InvestModal from '../DHedge/InvestModal';
-import { ExternalLink, InternalLink } from '../Links';
+import InvestModal from '../InvestModal';
+import { ExternalLink, InternalLink } from '../../Links';
 import PoolTablePanel from './PoolTablePanel';
 
 const PoolTableItem = ({ poolData }) => {
