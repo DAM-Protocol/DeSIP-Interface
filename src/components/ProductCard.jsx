@@ -6,13 +6,10 @@ import {
 	Image,
 	useColorModeValue,
 	Stack,
-	Button,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
 import { InternalLink } from './Links';
 
 const ProductCard = ({ title, description, imageURL, chain, disabled }) => {
-	const navigate = useNavigate();
 	return (
 		<Center py={6} minW={'340px'}>
 			<Box

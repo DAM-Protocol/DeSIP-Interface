@@ -10,9 +10,7 @@ import {
 	Popover,
 	PopoverTrigger,
 	PopoverContent,
-	Stack,
 } from '@chakra-ui/react';
-import { ColorModeSwitcher } from '../../ColorModeSwitcher';
 import UserMenu from './UserMenu';
 import { ExternalLink, NavLink } from './Links';
 import { VscClose } from 'react-icons/vsc';

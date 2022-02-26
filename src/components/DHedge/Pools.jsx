@@ -2,7 +2,6 @@ import {
 	Grid,
 	InputGroup,
 	InputLeftElement,
-	useDisclosure,
 	Input,
 	Box,
 } from '@chakra-ui/react';
@@ -12,8 +11,6 @@ import InvestModal from './InvestModal/';
 import { GoSearch as Search } from 'react-icons/go';
 
 const Pools = () => {
-	const { onClose } = useDisclosure();
-
 	const pools = [{}];
 
 	let [searchParams] = useSearchParams();
