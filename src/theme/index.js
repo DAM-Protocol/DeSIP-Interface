@@ -17,6 +17,9 @@ const colors = {
 };
 const styles = {
 	global: (props) => ({
+		html: {
+			fontSize: '16px',
+		},
 		body: {
 			background: mode(
 				"url('/bg-tile-light.png')",
