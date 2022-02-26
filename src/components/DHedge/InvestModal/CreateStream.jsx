@@ -17,7 +17,7 @@ import TokenSelector from './TokenSelector';
 
 const CreateStream = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [selectedToken, setSelectedToken] = useState(null);
+	const [selectedToken, setSelectedToken] = useState('');
 	const handleSelect = (token) => {
 		setSelectedToken(token);
 		onClose();
