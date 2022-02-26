@@ -2,7 +2,7 @@ import { Box, Accordion } from '@chakra-ui/react';
 
 import PoolTableItem from './PoolTableItem';
 
-const DHedge = () => {
+const DHedgeDashboard = () => {
 	return (
 		<Box overflowX='auto'>
 			{/* Pool Table */}
@@ -16,4 +16,4 @@ const DHedge = () => {
 	);
 };
 
-export default DHedge;
+export default DHedgeDashboard;

@@ -7,7 +7,7 @@ import {
 	TabPanels,
 	Tabs,
 } from '@chakra-ui/react';
-import DHedge from '../components/Dashboard/DHedge';
+import DHedgeDashboard from '../components/DHedge/Dashboard/';
 import Page from '../components/layouts/Page';
 
 const Dashboard = () => {
@@ -24,7 +24,7 @@ const Dashboard = () => {
 					</TabList>
 					<TabPanels>
 						<TabPanel>
-							<DHedge />
+							<DHedgeDashboard />
 						</TabPanel>
 						<TabPanel>Super-Enzyme</TabPanel>
 					</TabPanels>
