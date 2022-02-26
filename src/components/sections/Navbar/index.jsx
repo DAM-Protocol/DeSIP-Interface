@@ -93,7 +93,7 @@ const Navbar = (props) => {
 							{chain?.chainId === '0x89' ? 'Polygon' : 'Wrong Network'}
 						</Button>
 					)}
-					<ColorModeSwitcher />
+
 					<UserMenu />
 					<IconButton
 						onClick={onToggle}
@@ -132,8 +132,6 @@ const MobileNav = ({ onToggle }) => {
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}>
-				<NavLink to='/'>DeSIP</NavLink>
-
 				<NavLink
 					to='/'
 					display='block'
@@ -166,14 +164,6 @@ const MobileNav = ({ onToggle }) => {
 					onClick={onToggle}>
 					Docs
 				</ExternalLink>
-				<NavLink
-					to='/settings'
-					display='block'
-					textAlign='center'
-					width='100%'
-					onClick={onToggle}>
-					Settings
-				</NavLink>
 			</MotionVStack>
 			<IconButton
 				onClick={onToggle}
