@@ -22,7 +22,9 @@
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
-		"eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"cloud": "moralis-admin-cli watch-cloud-folder --autoSave 1 --moralisCloudfolder ./Moralis/cloud",
+		"getLogs": "moralis-admin-cli get-logs"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
