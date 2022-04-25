@@ -1,76 +1,113 @@
 const syncDhedgeAssets = async (request) => {
 	const data = JSON.stringify(assetsQuery);
+	const logger = Moralis.Cloud.getLogger();
 
-	log.info('LOG - INSIDE syncDhedgeAssets');
+	try {
+		const httpResponse = await Moralis.Cloud.httpRequest({
+			method: 'POST',
+			url: `https://api-v2.dhedge.org/graphql`,
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8',
+			},
+			body: data,
+		}).then(
+			async function (httpResponse) {
+				let dataObj = httpResponse.data;
+				dataObj = JSON.stringify(dataObj);
+				dataObj = JSON.parse(dataObj);
 
-	const httpResponse = await Moralis.Cloud.httpRequest({
-		method: 'POST',
-		url: `https://api-v2.dhedge.org/graphql`,
-		headers: {
-			'Content-Type': 'application/json;charset=utf-8',
-		},
-		body: data,
-	});
+				const assets = dataObj.data.assets;
+				// logger.info(`Found ${assets.length} assets`);
 
-	// filter assets with chainID polygon
-	const filteredAssets = httpResponse.body.data.assets.filter(
-		(asset) => asset.blockchainCode === 'POLYGON'
-	);
+				// filter assets with chainID polygon
+				const filteredAssets = assets.filter(
+					(asset) => asset.blockchainCode === 'POLYGON'
+				);
 
-	// use filteredAssets address as key
-	const assetsByAddress = filteredAssets.reduce((assets, asset) => {
-		assets[asset.address] = asset;
-		return assets;
-	}, {});
-	request.log.info(`dHEDGE Assets: ${assetsByAddress}`);
+				// logger.info(
+				// 	`Filtered ${assets.length} assets to ${filteredAssets.length}`
+				// );
 
-	// get all assets from db
-	const Asset = Moralis.Object.extent('DhedgeAsset');
-	const existingAssets = await Asset.find();
+				// use filteredAssets address as key
+				const assetsByAddress = filteredAssets.reduce((assets, asset) => {
+					assets[asset.address] = asset;
+					return assets;
+				}, {});
 
-	for (const asset of existingAssets) {
-		request.log.info(`Syncing dHEDGE Asset: ${asset.address}`);
-		const assetData = asset.attributes;
-		const {
-			blockchainCode,
-			address,
-			id,
-			name,
-			type,
-			precision,
-			rate,
-			description,
-		} = assetData;
+				const DhedgeAsset = Moralis.Object.extend('DhedgeAsset');
 
-		if (assetsByAddress[address] && assetData !== assetsByAddress[address]) {
-			asset.set('blockchainCode', blockchainCode);
-			asset.set('address', address);
-			asset.set('id', id);
-			asset.set('name', name);
-			asset.set('type', type);
-			asset.set('precision', precision);
-			asset.set('rate', rate);
-			asset.set('description', description);
-			asset.save(null, { useMasterKey: true });
+				for (const assetAddress in assetsByAddress) {
+					const {
+						blockchainCode,
+						address,
+						id,
+						name,
+						type,
+						precision,
+						rate,
+						description,
+					} = assetsByAddress[assetAddress];
 
-			// log to console
-			request.log.info(`Updated asset: ${asset.attributes.name}`);
-		} else {
-			const newAsset = new Asset();
-			newAsset.set('blockchainCode', blockchainCode);
-			newAsset.set('address', address);
-			newAsset.set('id', id);
-			newAsset.set('name', name);
-			newAsset.set('type', type);
-			newAsset.set('precision', precision);
-			newAsset.set('rate', rate);
-			newAsset.set('description', description);
-			newSsset.save(null, { useMasterKey: true });
+					const query = new Moralis.Query(DhedgeAsset);
+					const existingAsset = await query
+						.fullText('address', address)
+						.first({ useMasterKey: true });
 
-			// log to console
-			request.log.info(`Added asset: ${name}`);
-		}
+					if (existingAsset) {
+						existingAsset.set('blockchainCode', blockchainCode);
+						existingAsset.set('address', address);
+						existingAsset.set('assetId', id);
+						existingAsset.set('name', name);
+						existingAsset.set('type', type);
+						existingAsset.set('precision', precision);
+						existingAsset.set('rate', rate);
+						existingAsset.set('description', description);
+						await existingAsset.save().then(
+							(object) => {
+								logger.info('Asset Updated with objectId: ' + object.id);
+							},
+							(error) => {
+								logger.info(
+									'Error creating asset for ' + address + ' ' + error.message
+								);
+							}
+						);
+					} else {
+						const DhedgeAsset = Moralis.Object.extend('DhedgeAsset');
+						const newAsset = new DhedgeAsset();
+
+						newAsset.set('blockchainCode', blockchainCode);
+						newAsset.set('address', address);
+
+						newAsset.set('assetId', id);
+						newAsset.set('name', name);
+						newAsset.set('type', type);
+						newAsset.set('precision', precision);
+						newAsset.set('rate', rate);
+						newAsset.set('description', description);
+
+						await newAsset.save(null, { useMasterKey: true }).then(
+							(object) => {
+								logger.info('New asset created with objectId: ' + object.id);
+							},
+							(error) => {
+								logger.info(
+									'Error creating asset for ' + address + ' ' + error.message
+								);
+							}
+						);
+					}
+				}
+			},
+			function (httpResponse) {
+				logger.error(
+					'Request failed with response code ' + httpResponse.status
+				);
+			}
+		);
+	} catch (e) {
+		logger.error(e);
 	}
 
-	return true;
+	request.message('Sync Dhedge Assets Completed');
 };
