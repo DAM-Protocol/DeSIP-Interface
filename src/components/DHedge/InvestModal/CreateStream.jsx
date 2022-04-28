@@ -13,11 +13,12 @@ import {
 	Image,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import { defaultTokenList } from './defaultTokenList';
 import TokenSelector from './TokenSelector';
 
 const CreateStream = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [selectedToken, setSelectedToken] = useState('');
+	const [selectedToken, setSelectedToken] = useState(defaultTokenList[0]);
 	const handleSelect = (token) => {
 		setSelectedToken(token);
 		onClose();
@@ -35,7 +36,9 @@ const CreateStream = () => {
 			<TokenSelector
 				isOpen={isOpen}
 				onClose={onClose}
-				handleSelect={handleSelect}></TokenSelector>
+				handleSelect={handleSelect}
+				tokenList={defaultTokenList}
+			/>
 
 			<FormControl>
 				<label htmlFor='supertoken'>Super Token</label>
