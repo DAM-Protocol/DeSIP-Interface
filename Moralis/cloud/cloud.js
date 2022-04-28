@@ -8,6 +8,16 @@ Moralis.Cloud.job('syncDhedgeAssets', (request) => {
 	log.info('LOG - Syncing dHEDGE Assets');
 	return syncDhedgeAssets(request);
 });
+Moralis.Cloud.job('syncDhedgePools', (request) => {
+	// params: passed in the job call
+	// headers: from the request that triggered the job
+	// log: the Moralis Server logger passed in the request
+	// message: a function to update the status message of the job object
+	const { params, headers, log, message } = request;
+	message('MESSAGE - Syncing dHEDGE Pool Data');
+	log.info('LOG - Syncing dHEDGE Pool Data');
+	return syncDhedgeFunds(request);
+});
 
 Moralis.Cloud.job('exampleJob', (request) => {
 	// params: passed in the job call

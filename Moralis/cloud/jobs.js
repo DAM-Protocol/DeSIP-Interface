@@ -1,5 +1,7 @@
 const syncDhedgeAssets = async (request) => {
-	const data = JSON.stringify(assetsQuery);
+	request.message('Sync Dhedge Assets Started');
+
+	const data = JSON.stringify({ query: assetsQuery });
 	const logger = Moralis.Cloud.getLogger();
 
 	try {
@@ -12,9 +14,7 @@ const syncDhedgeAssets = async (request) => {
 			body: data,
 		}).then(
 			async function (httpResponse) {
-				let dataObj = httpResponse.data;
-				dataObj = JSON.stringify(dataObj);
-				dataObj = JSON.parse(dataObj);
+				let dataObj = JSON.parse(httpResponse.text);
 
 				const assets = dataObj.data.assets;
 				// logger.info(`Found ${assets.length} assets`);
@@ -110,4 +110,69 @@ const syncDhedgeAssets = async (request) => {
 	}
 
 	request.message('Sync Dhedge Assets Completed');
+};
+
+const syncDhedgeFunds = async (request) => {
+	const logger = Moralis.Cloud.getLogger();
+
+	// get all rows from SuperDhedgePool class
+	const SuperDhedgePool = Moralis.Object.extend('SuperDhedgePool');
+	const query = new Moralis.Query(SuperDhedgePool);
+	const superDhedgePools = await query.find({ useMasterKey: true });
+
+	// iterate over all funds
+	try {
+		for (const superDhedgePool of superDhedgePools) {
+			const fundAddress = superDhedgePool.get('dhedgeFundAddress');
+
+			const data = JSON.stringify({
+				query: fundQuery,
+				variables: `{
+					"address": "${fundAddress}"
+				}`,
+			});
+			logger.info('data: ' + data);
+
+			const httpResponse = await Moralis.Cloud.httpRequest({
+				method: 'POST',
+				url: `https://api-v2.dhedge.org/graphql`,
+				headers: {
+					'Content-Type': 'application/json;charset=utf-8',
+				},
+				body: data,
+			});
+			logger.info(httpResponse.text);
+
+			const {
+				data: { fund: fundData },
+			} = JSON.parse(httpResponse.text);
+
+			// update row columns with fund data
+			const supportedDepositTokens = fundData.fundComposition
+				.filter((token) => token.isDeposit)
+				.map((token) => token.tokenAddress);
+			superDhedgePool.set('supportedDepositTokens', supportedDepositTokens);
+
+			superDhedgePool.set('managerName', fundData.managerName);
+			superDhedgePool.set('name', fundData.name);
+			superDhedgePool.set('adjustedTokenPrice', fundData.adjustedTokenPrice);
+			superDhedgePool.set('tokenPrice', fundData.tokenPrice);
+			superDhedgePool.set('fundId', fundData.id);
+			superDhedgePool.set('totalValue', fundData.totalValue);
+			superDhedgePool.set('poolDetails', fundData.poolDetails);
+			superDhedgePool.set('riskFactor', fundData.riskFactor);
+			superDhedgePool.set('performanceFactor', fundData.performanceFactor);
+			superDhedgePool.set('performanceMetrics', fundData.performanceMetrics);
+			superDhedgePool.set('leaderboardRank', fundData.leaderboardRank);
+			superDhedgePool.set('isPrivate', fundData.isPrivate);
+
+			await superDhedgePool.save().then((object) => {
+				logger.info('Fund Updated with objectId: ' + object.id);
+			});
+		}
+	} catch (e) {
+		logger.error(e);
+	}
+
+	request.message('Sync Dhedge Funds Completed');
 };
