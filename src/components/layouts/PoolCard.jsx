@@ -14,6 +14,8 @@ import {
 	Tbody,
 	Td,
 	Tooltip,
+	VStack,
+	Divider,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import PoolImage from '../PoolImage';
@@ -50,21 +52,33 @@ const PoolCard = ({ imageURL, children, name }) => {
 					justify='space-between'
 					flexDirection='column'
 					align={'center'}>
-					<Table variant='unstyled' size='sm'>
-						<Tbody>
-							<Tr>
-								<Td textAlign='center'>
-									<Tooltip
-										label='Total Value Managed'
-										hasArrow
-										aria-label='A tooltip'>
-										TVM - $12k
-									</Tooltip>
-								</Td>
-								<Td textAlign='center'>Risk - 4/5</Td>
-							</Tr>
-						</Tbody>
-					</Table>
+					<HStack
+						bg={useColorModeValue('gray.50', 'whiteAlpha.100')}
+						w='100%'
+						h='5rem'
+						maxW={'35ch'}
+						rounded='md'
+						justify='space-around'
+						p='4'>
+						<VStack align='start'>
+							<Text fontSize='xs' fontWeight={500} as='label'>
+								TVM
+							</Text>
+							<Text fontSize='sm' fontWeight={500}>
+								$124.75K
+							</Text>
+						</VStack>
+						<Divider orientation='vertical' borderColor={'gray.500'} />
+						<VStack align='start'>
+							<Text fontSize='xs' fontWeight={500} as='label'>
+								Risk Factor
+							</Text>
+							<Text fontSize='sm' fontWeight={500}>
+								4/5
+							</Text>
+						</VStack>
+					</HStack>
+
 					<Table variant='simple' size='sm'>
 						<Thead>
 							<Tr>
