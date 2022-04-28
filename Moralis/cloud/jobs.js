@@ -1,5 +1,5 @@
 const syncDhedgeAssets = async (request) => {
-	request.message('Sync Dhedge Assets Started');
+	request.message('[MESSAGE] : Sync Dhedge Assets Started');
 
 	const data = JSON.stringify({ query: assetsQuery });
 	const logger = Moralis.Cloud.getLogger();
@@ -64,11 +64,16 @@ const syncDhedgeAssets = async (request) => {
 						existingAsset.set('description', description);
 						await existingAsset.save().then(
 							(object) => {
-								logger.info('Asset Updated with objectId: ' + object.id);
+								logger.info(
+									'[LOG] : Asset Updated with objectId: ' + object.id
+								);
 							},
 							(error) => {
 								logger.info(
-									'Error creating asset for ' + address + ' ' + error.message
+									'[LOG] : Error creating asset for ' +
+										address +
+										' ' +
+										error.message
 								);
 							}
 						);
@@ -88,11 +93,16 @@ const syncDhedgeAssets = async (request) => {
 
 						await newAsset.save(null, { useMasterKey: true }).then(
 							(object) => {
-								logger.info('New asset created with objectId: ' + object.id);
+								logger.info(
+									'[LOG] : New asset created with objectId: ' + object.id
+								);
 							},
 							(error) => {
 								logger.info(
-									'Error creating asset for ' + address + ' ' + error.message
+									'[LOG] : Error creating asset for ' +
+										address +
+										' ' +
+										error.message
 								);
 							}
 						);
@@ -101,7 +111,7 @@ const syncDhedgeAssets = async (request) => {
 			},
 			function (httpResponse) {
 				logger.error(
-					'Request failed with response code ' + httpResponse.status
+					'[LOG] : Request failed with response code ' + httpResponse.status
 				);
 			}
 		);
@@ -109,7 +119,10 @@ const syncDhedgeAssets = async (request) => {
 		logger.error(e);
 	}
 
-	request.message('Sync Dhedge Assets Completed');
+	request.message(
+		'[MESSAGE] : Sync Dhedge Assets Completed' +
+			new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
+	);
 };
 
 const syncDhedgeFunds = async (request) => {
@@ -131,7 +144,6 @@ const syncDhedgeFunds = async (request) => {
 					"address": "${fundAddress}"
 				}`,
 			});
-			logger.info('data: ' + data);
 
 			const httpResponse = await Moralis.Cloud.httpRequest({
 				method: 'POST',
@@ -141,7 +153,6 @@ const syncDhedgeFunds = async (request) => {
 				},
 				body: data,
 			});
-			logger.info(httpResponse.text);
 
 			const {
 				data: { fund: fundData },
@@ -167,12 +178,15 @@ const syncDhedgeFunds = async (request) => {
 			superDhedgePool.set('isPrivate', fundData.isPrivate);
 
 			await superDhedgePool.save().then((object) => {
-				logger.info('Fund Updated with objectId: ' + object.id);
+				logger.info('[LOG] : Fund Updated with objectId: ' + object.id);
 			});
 		}
 	} catch (e) {
 		logger.error(e);
 	}
 
-	request.message('Sync Dhedge Funds Completed');
+	request.message(
+		'[MESSAGE] : Sync Dhedge Funds Completed' +
+			new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
+	);
 };
