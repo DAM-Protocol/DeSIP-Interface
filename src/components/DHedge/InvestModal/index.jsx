@@ -39,7 +39,7 @@ const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 			<ModalOverlay />
 			<ModalContent
 				height='80%'
-				bg={useColorModeValue('white', 'brand.darkBg.900')}
+				background={useColorModeValue('white', 'bg.dark.900')}
 				borderWidth='1px'
 				borderColor={useColorModeValue('gray.200', 'blue.700')}>
 				<ModalHeader textAlign={'center'} fontSize='2xl'>
@@ -52,25 +52,26 @@ const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 					{isViewWidthSmall ? (
 						<Tabs isFitted variant='enclosed-colored' colorScheme='blue'>
 							<TabList mb='1rem'>
-								<Tab>Invest</Tab>
 								<Tab>Pool</Tab>
+								<Tab>Invest</Tab>
 							</TabList>
 
 							<TabPanels>
 								<TabPanel>
-									<Box w='100%'>
-										<CreateStream />
-									</Box>
+									<PoolDetails poolData={poolData} />
 								</TabPanel>
 
 								<TabPanel>
-									<PoolDetails poolData={poolData} />
+									<Box w='100%'>
+										<CreateStream />
+									</Box>
 								</TabPanel>
 							</TabPanels>
 						</Tabs>
 					) : (
 						<Flex height={'100%'}>
 							<PoolDetails poolData={poolData} />
+
 							<Box w='50%'>
 								<CreateStream />
 							</Box>
@@ -110,6 +111,10 @@ const dummyData = {
 		{
 			name: 'USDC',
 			icon: 'https://app.dhedge.org/static/media/usdc.c8fcab48.svg',
+		},
+		{
+			name: 'USDT',
+			icon: 'https://app.dhedge/static/media/usdc.c8fcab48.svg',
 		},
 	],
 };
