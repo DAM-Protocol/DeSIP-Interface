@@ -19,7 +19,7 @@ const SuperPool = () => {
 	const { poolAddress } = useParams();
 
 	return (
-		<Page>
+		<Page bg>
 			<Stack direction={['column', 'row']} wrap='wrap' spacing='0'>
 				<PoolDetails poolData={poolData} />
 
