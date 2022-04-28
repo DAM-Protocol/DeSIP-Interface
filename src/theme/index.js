@@ -6,12 +6,15 @@ const config = {
 };
 
 const colors = {
-	brand: {
-		darkBg: {
+	bg: {
+		dark: {
 			100: '#1a3f6e',
 			600: '#152e4d',
 			700: '#12263f',
 			900: '#0c192a',
+		},
+		gray: {
+			100: '#f7f7f7',
 		},
 	},
 };
