@@ -19,6 +19,9 @@ const Application = () => {
 				</BrowserRouter>
 			</MoralisProvider>
 		);
+	else {
+		<>Error</>;
+	}
 };
 
 ReactDOM.render(
