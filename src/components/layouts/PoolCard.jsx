@@ -13,15 +13,20 @@ import {
 	Th,
 	Tbody,
 	Td,
-	Tooltip,
 	VStack,
 	Divider,
 } from '@chakra-ui/react';
+import numberFormatter from '../../utils/numberFormatter';
 import { useNavigate } from 'react-router-dom';
+import { useMoralis } from 'react-moralis';
+import useDhedgePerformanceMetric from '../../hooks/useDhedgePerformanceMetric';
 import PoolImage from '../PoolImage';
 
-const PoolCard = ({ imageURL, children, name }) => {
+const PoolCard = ({ poolAttributes }) => {
 	const navigate = useNavigate();
+	const { Moralis } = useMoralis();
+	// { name, imageURL, managerName, riskFactor, poolDetails },
+	console.log(poolAttributes);
 
 	return (
 		<Center py={6} minW={'200px'}>
@@ -37,13 +42,13 @@ const PoolCard = ({ imageURL, children, name }) => {
 				rounded={'lg'}
 				pos={'relative'}
 				zIndex={1}>
-				<PoolImage imageURL={imageURL} />
+				<PoolImage card imageURL={poolAttributes?.imageURL} />
 
 				<Heading textAlign='center' as='h5' fontSize={'lg'} fontWeight={500}>
-					{name}
+					{poolAttributes?.name}
 				</Heading>
 				<Text textAlign='center' color={'gray.500'} fontSize='sm'>
-					CM
+					{poolAttributes.managerName}
 				</Text>
 				<Flex
 					pt={5}
@@ -65,7 +70,10 @@ const PoolCard = ({ imageURL, children, name }) => {
 								TVM
 							</Text>
 							<Text fontSize='sm' fontWeight={500}>
-								$124.75K
+								$
+								{numberFormatter(
+									Moralis.Units.FromWei(poolAttributes?.totalValue || '0')
+								)}
 							</Text>
 						</VStack>
 						<Divider orientation='vertical' borderColor={'gray.500'} />
@@ -74,7 +82,7 @@ const PoolCard = ({ imageURL, children, name }) => {
 								Risk Factor
 							</Text>
 							<Text fontSize='sm' fontWeight={500}>
-								4/5
+								{poolAttributes?.riskFactor}/5
 							</Text>
 						</VStack>
 					</HStack>
@@ -89,9 +97,24 @@ const PoolCard = ({ imageURL, children, name }) => {
 						</Thead>
 						<Tbody>
 							<Tr>
-								<Td textAlign='center'>10%</Td>
-								<Td textAlign='center'>-2%</Td>
-								<Td textAlign='center'>5%</Td>
+								<Td textAlign='center'>
+									{useDhedgePerformanceMetric(
+										poolAttributes.performanceMetrics['month'],
+										poolAttributes.performanceFactor
+									)}
+								</Td>
+								<Td textAlign='center'>
+									{useDhedgePerformanceMetric(
+										poolAttributes.performanceMetrics['year'],
+										poolAttributes.performanceFactor
+									)}
+								</Td>
+								<Td textAlign='center'>
+									{useDhedgePerformanceMetric(
+										poolAttributes.performance,
+										poolAttributes.performanceFactor
+									)}
+								</Td>
 							</Tr>
 						</Tbody>
 					</Table>
@@ -99,14 +122,16 @@ const PoolCard = ({ imageURL, children, name }) => {
 						<Button
 							colorScheme='blue'
 							variant='outline'
-							onClick={() => navigate(`/Super-dHEDGE/?pool=df`)}>
+							onClick={() =>
+								navigate(
+									`/Super-dHEDGE/?pool=${poolAttributes?.superPoolAddress}`
+								)
+							}>
 							Stream
 						</Button>
 						<Button
 							onClick={() =>
-								navigate(
-									`/Super-dHEDGE/${'0x144df3929ae3af097585534135454f7fbcce0c1e'}`
-								)
+								navigate(`/Super-dHEDGE/${poolAttributes?.superPoolAddress}`)
 							}
 							variant={'unstyled'}>
 							Explore
