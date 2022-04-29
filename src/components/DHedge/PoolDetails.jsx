@@ -19,6 +19,7 @@ import {
 	Divider,
 } from '@chakra-ui/react';
 import AssetTag from '../AssetTag';
+import PoolImage from '../PoolImage';
 
 const PoolDetails = ({ poolData }) => {
 	return (
@@ -40,14 +41,7 @@ const PoolDetails = ({ poolData }) => {
 				direction='column'
 				align={'center'}
 				gap='4'>
-				<Image
-					rounded={'full'}
-					h={24}
-					w={24}
-					objectFit={'cover'}
-					filter={'drop-shadow(0px 0px 10px #0000001d)'}
-					src={poolData?.imageURL}
-				/>
+				<PoolImage imageURL={poolData?.imageURL} />
 				<VStack align='flex-start'>
 					<Heading as='h6' fontSize={'xl'} fontWeight={500}>
 						{poolData?.name}
