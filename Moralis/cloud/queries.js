@@ -22,6 +22,7 @@ const fundQuery = `
             isPrivate
             leaderboardRank
             performanceFactor
+            performance
             performanceMetrics {
                 day
                 halfyear

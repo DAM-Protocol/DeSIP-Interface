@@ -62,7 +62,7 @@ const syncDhedgeAssets = async (request) => {
 						existingAsset.set('precision', precision);
 						existingAsset.set('rate', rate);
 						existingAsset.set('description', description);
-						await existingAsset.save().then(
+						await existingAsset.save(null, { useMasterKey: true }).then(
 							(object) => {
 								logger.info(
 									'[LOG] : Asset Updated with objectId: ' + object.id
@@ -168,6 +168,7 @@ const syncDhedgeFunds = async (request) => {
 			superDhedgePool.set('name', fundData.name);
 			superDhedgePool.set('adjustedTokenPrice', fundData.adjustedTokenPrice);
 			superDhedgePool.set('tokenPrice', fundData.tokenPrice);
+			superDhedgePool.set('performance', fundData.performance);
 			superDhedgePool.set('fundId', fundData.id);
 			superDhedgePool.set('totalValue', fundData.totalValue);
 			superDhedgePool.set('poolDetails', fundData.poolDetails);
@@ -177,9 +178,11 @@ const syncDhedgeFunds = async (request) => {
 			superDhedgePool.set('leaderboardRank', fundData.leaderboardRank);
 			superDhedgePool.set('isPrivate', fundData.isPrivate);
 
-			await superDhedgePool.save().then((object) => {
-				logger.info('[LOG] : Fund Updated with objectId: ' + object.id);
-			});
+			await superDhedgePool
+				.save(null, { useMasterKey: true })
+				.then((object) => {
+					logger.info('[LOG] : Fund Updated with objectId: ' + object.id);
+				});
 		}
 	} catch (e) {
 		logger.error(e);
