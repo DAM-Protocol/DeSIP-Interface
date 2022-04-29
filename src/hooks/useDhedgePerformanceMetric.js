@@ -8,16 +8,9 @@ const useDhedgePerformanceMetric = (
 	metric = '1000000000000000000',
 	performanceFactor = '1000000000000000000'
 ) => {
-	console.log(metric, performanceFactor);
 	const { Moralis } = useMoralis();
 	const shortMetric = Moralis.Units.FromWei(metric, 14);
 	const shortPerformanceFactor = Moralis.Units.FromWei(performanceFactor, 14);
-	console.log(
-		shortMetric,
-		shortPerformanceFactor,
-		shortMetric - shortPerformanceFactor
-	);
-
 	return (
 		(
 			((+shortMetric - shortPerformanceFactor) / shortPerformanceFactor) *

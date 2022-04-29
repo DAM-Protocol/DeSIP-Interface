@@ -2,7 +2,7 @@ import { Box, Stack, useColorModeValue } from '@chakra-ui/react';
 
 const Page = (props) => {
 	const bg = useColorModeValue('bg.gray.100', 'bg.dark.900');
-	console.log(props.bg, bg);
+
 	return (
 		<Box
 			minH='calc(100vh - 11rem)'
