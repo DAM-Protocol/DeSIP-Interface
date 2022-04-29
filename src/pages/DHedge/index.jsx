@@ -16,18 +16,18 @@ import Page from '../../components/layouts/Page';
 const SuperDHedge = () => {
 	return (
 		<Page>
-			<Box>
-				<Heading as='h1' size='2xl' mb='8'>
+			<Box mb='6'>
+				<Heading as='h1' size='2xl' mb='8' textAlign='center'>
 					Super dHEDGE
 				</Heading>
-				<Text display='block'>
+				<Text display='block' maxW='40ch' m='auto'>
 					Stream into dHEDGE Pools in two clicks
 					<br />
 					<br />
 					Let top Managers do the work for you. Check their track records and
 					trading strategies.
 				</Text>
-				<StatGroup>
+				{/* <StatGroup>
 					<Stat>
 						<StatLabel>Now Streaming</StatLabel>
 						<StatNumber>$ 345,670</StatNumber>
@@ -41,12 +41,12 @@ const SuperDHedge = () => {
 						<StatLabel>Pools</StatLabel>
 						<StatNumber>4</StatNumber>
 					</Stat>
-				</StatGroup>
+				</StatGroup> */}
 			</Box>
 
 			<Divider></Divider>
 
-			<Box>
+			<Box my='4'>
 				<Heading as='h2' size='lg' textAlign='center'>
 					Pools
 				</Heading>

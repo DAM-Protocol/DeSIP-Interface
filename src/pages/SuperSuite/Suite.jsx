@@ -5,12 +5,12 @@ import ProductCard from '../../components/ProductCard';
 const Suite = () => {
 	return (
 		<Page>
-			<Heading as='h1' size='2xl'>
+			<Heading as='h1' size='2xl' textAlign='center'>
 				Super Suite
 			</Heading>
-			<Text>Invest in Pools with Convenience</Text>
 			<Divider />
 			<Stack
+				mt='6'
 				pt={10}
 				direction={['column', 'column', 'row']}
 				justify='space-evenly'>

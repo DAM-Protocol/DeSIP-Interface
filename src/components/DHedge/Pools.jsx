@@ -28,7 +28,8 @@ const Pools = () => {
 		<>
 			<InvestModal poolData={openPool?.attributes} isOpen={!!poolAddress} />
 
-			<Box>
+			{/* search box */}
+			{/* <Box>
 				<InputGroup m='auto' my={10} mb='14' maxWidth='60ch'>
 					<InputLeftElement
 						pointerEvents='none'
@@ -44,9 +45,12 @@ const Pools = () => {
 						py={5}
 					/>
 				</InputGroup>
-			</Box>
+			</Box> */}
 
-			<Grid templateColumns={'repeat(auto-fit, minmax(18rem, 1fr));'} gap={'4'}>
+			<Grid
+				templateColumns={'repeat(auto-fit, minmax(18rem, 1fr));'}
+				gap={'4'}
+				mt='16'>
 				{pools?.map((pool) => (
 					<PoolCard key={pool.id} poolAttributes={pool?.attributes} />
 				))}

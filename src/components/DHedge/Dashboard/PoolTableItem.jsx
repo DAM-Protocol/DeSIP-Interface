@@ -99,10 +99,7 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 					</Text>
 					<Flex fontSize='sm' opacity='0.7' as='span' align='center'>
 						Balance
-						<Tooltip
-							label={`Balance Pool Super Tokens ${poolData?.poolTokenSymbol}`}
-							hasArrow
-							aria-label={`Balance Pool Super Tokens ${poolData?.poolTokenSymbol}`}>
+						<Tooltip label={`DHPTx`} hasArrow aria-label={`DHPTx`}>
 							<Flex as='span' ml='2'>
 								<Icon as={AiOutlineInfoCircle} w={4} h={4} />
 							</Flex>
