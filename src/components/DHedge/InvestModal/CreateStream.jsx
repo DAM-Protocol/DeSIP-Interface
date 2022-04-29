@@ -65,9 +65,11 @@ const CreateStream = () => {
 							e.key !== 'Tab' &&
 							e.key !== 'Shift' &&
 							e.key !== 'Escape' &&
-							onOpen()
+							onOpen() &&
+							e.target.blur()
 						}
 						cursor='pointer'
+						onChange={() => {}}
 						value={selectedToken?.symbol}
 					/>
 				</InputGroup>
