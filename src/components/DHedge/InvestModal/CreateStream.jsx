@@ -12,7 +12,7 @@ import {
 	InputLeftElement,
 	Image,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { defaultTokenList } from './defaultTokenList';
 import TokenSelector from './TokenSelector';
 
@@ -23,6 +23,8 @@ const CreateStream = () => {
 		setSelectedToken(token);
 		onClose();
 	};
+
+	const rateInputRef = useRef();
 	return (
 		<VStack gap='6' w='100%' px='4' borderRadius={'md'}>
 			<Alert
@@ -38,6 +40,7 @@ const CreateStream = () => {
 				onClose={onClose}
 				handleSelect={handleSelect}
 				tokenList={defaultTokenList}
+				finalFocusRef={rateInputRef}
 			/>
 
 			<FormControl>
@@ -61,13 +64,11 @@ const CreateStream = () => {
 						type='text'
 						id='supertoken'
 						onClick={onOpen}
-						onKeyUp={(e) =>
-							e.key !== 'Tab' &&
-							e.key !== 'Shift' &&
-							e.key !== 'Escape' &&
-							onOpen() &&
-							e.target.blur()
-						}
+						onKeyUp={(e) => {
+							if (e.key === 'Enter') e.target.blur();
+							if (e.key !== 'Tab' && e.key !== 'Shift' && e.key !== 'Escape')
+								onOpen();
+						}}
 						cursor='pointer'
 						onChange={() => {}}
 						value={selectedToken?.symbol}
@@ -77,7 +78,7 @@ const CreateStream = () => {
 
 			<FormControl>
 				<label htmlFor='rate'> Rate (Tokens/month)</label>
-				<Input type='number' id='rate' />
+				<Input type='number' id='rate' ref={rateInputRef} />
 			</FormControl>
 
 			<Spacer />

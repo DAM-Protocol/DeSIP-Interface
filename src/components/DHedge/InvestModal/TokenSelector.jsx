@@ -9,14 +9,21 @@ import {
 } from '@chakra-ui/react';
 import TokenItem from './TokenItem';
 
-const TokenSelector = ({ isOpen, onClose, handleSelect, tokenList }) => {
+const TokenSelector = ({
+	isOpen,
+	onClose,
+	handleSelect,
+	tokenList,
+	finalFocusRef,
+}) => {
 	return (
 		<Modal
 			isOpen={isOpen}
 			onClose={onClose}
 			isCentered
 			motionPreset='slideInBottom'
-			scrollBehavior='inside'>
+			scrollBehavior='inside'
+			finalFocusRef={finalFocusRef}>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Select A Super Token</ModalHeader>
