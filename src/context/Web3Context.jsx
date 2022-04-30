@@ -1,6 +1,6 @@
 import { Framework } from '@superfluid-finance/sdk-core';
 import { createContext, useState, useMemo } from 'react';
-import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
+import { useMoralis, useMoralisWeb3Api, useMoralisQuery } from 'react-moralis';
 import { useEffect } from 'react';
 
 const Web3Context = createContext({
@@ -10,43 +10,70 @@ const Web3Context = createContext({
 
 const Web3ContextProvider = ({ children }) => {
 	const {
-		web3,
 		Moralis,
 		isAuthenticated,
 		enableWeb3,
 		isWeb3Enabled,
 		isWeb3EnableLoading,
 	} = useMoralis();
-	const [sf, setSf] = useState(null);
-	const [sfProvider, setSfProvider] = useState(null);
+
+	useEffect(() => {
+		window.Moralis = Moralis;
+	});
 
 	useEffect(() => {
 		if (isAuthenticated && !isWeb3Enabled && !isWeb3EnableLoading) enableWeb3();
-	}, [isAuthenticated, isWeb3Enabled, isWeb3EnableLoading]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isAuthenticated, isWeb3Enabled]);
+	// const {
+	// 	web3,
+	// 	Moralis,
+	// 	isAuthenticated,
+	// 	enableWeb3,
+	// 	isWeb3Enabled,
+	// 	isWeb3EnableLoading,
+	// } = useMoralis();
+	// const [sf, setSf] = useState(null);
+	// const [sfProvider, setSfProvider] = useState(null);
 
-	useEffect(() => {
-		(async () => {
-			if (!isWeb3Enabled) return null;
+	// useEffect(() => {
+	// 	if (isAuthenticated && !isWeb3Enabled && !isWeb3EnableLoading) enableWeb3();
+	// }, [isAuthenticated, isWeb3Enabled, isWeb3EnableLoading]);
 
-			const ethers = Moralis.web3Library;
-			const mmProvider = new ethers.providers.Web3Provider(window.ethereum);
+	// useEffect(() => {
+	// 	(async () => {
+	// 		if (!isWeb3Enabled) return null;
 
-			const _sf = await Framework.create({
-				networkName: 'polygon',
-				provider: mmProvider,
-			});
-			setSfProvider(mmProvider);
-			setSf(_sf);
-		})();
-	}, [isWeb3Enabled, web3]);
+	// 		const ethers = Moralis.web3Library;
+	// 		const mmProvider = new ethers.providers.Web3Provider(window.ethereum);
+
+	// 		const _sf = await Framework.create({
+	// 			networkName: 'polygon',
+	// 			provider: mmProvider,
+	// 		});
+	// 		setSfProvider(mmProvider);
+	// 		setSf(_sf);
+	// 	})();
+	// }, [isWeb3Enabled, web3]);
+
+	// Moralis Queries
+	// const {
+	// 	fetch: getDhedgeAssets,
+	// 	data: dhedgeAssets,
+	// 	error: dhedgeAssetsError,
+	// } = useMoralisQuery('DhedgeAsset', (query) => query.find(), [], {
+	// 	autoFetch: false,
+	// });
 
 	return (
 		<Web3Context.Provider
-			value={{
-				sf: sf,
-				sfProvider,
-				isWeb3Enabled,
-			}}>
+			value={{}}
+			// value={{
+			// 	sf: sf,
+			// 	sfProvider,
+			// 	isWeb3Enabled,
+			// }}
+		>
 			{children}
 		</Web3Context.Provider>
 	);

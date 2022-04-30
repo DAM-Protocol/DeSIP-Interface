@@ -23,13 +23,6 @@ const Navbar = (props) => {
 	const bgColor = useColorModeValue('whiteAlpha.800', 'blackAlpha.700');
 	const { isOpen, onToggle } = useDisclosure();
 	const { switchNetwork, chain } = useChain();
-	const { isAuthenticated, enableWeb3, isWeb3Enabled, isWeb3EnableLoading } =
-		useMoralis();
-
-	useEffect(() => {
-		if (isAuthenticated && !isWeb3Enabled && !isWeb3EnableLoading) enableWeb3();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isAuthenticated, isWeb3Enabled]);
 
 	return (
 		<>
@@ -93,6 +86,7 @@ const Navbar = (props) => {
 					)}
 
 					<UserMenu />
+
 					<IconButton
 						onClick={onToggle}
 						icon={isOpen ? null : <RiMenu5Fill />}
