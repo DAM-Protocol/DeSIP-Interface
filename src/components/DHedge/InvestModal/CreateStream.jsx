@@ -46,19 +46,15 @@ const CreateStream = () => {
 			<FormControl>
 				<label htmlFor='supertoken'>Super Token</label>
 				<InputGroup>
-					<InputLeftElement
-						pointerEvents='none'
-						mr='6'
-						children={
-							<Image
-								boxSize={'1.25rem'}
-								borderRadius='50%'
-								alt='token'
-								src={selectedToken?.icon}
-								fallbackSrc='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-circle-outline-512.png'
-							/>
-						}
-					/>
+					<InputLeftElement pointerEvents='none' mr='6'>
+						<Image
+							boxSize={'1.25rem'}
+							borderRadius='50%'
+							alt='token'
+							src={selectedToken?.icon}
+							fallbackSrc='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-circle-outline-512.png'
+						/>
+					</InputLeftElement>
 
 					<Input
 						type='text'
