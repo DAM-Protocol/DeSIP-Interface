@@ -1,6 +1,11 @@
 import { Framework } from '@superfluid-finance/sdk-core';
 import { createContext, useState, useMemo } from 'react';
-import { useMoralis, useMoralisWeb3Api, useMoralisQuery } from 'react-moralis';
+import {
+	useMoralis,
+	useMoralisWeb3Api,
+	useMoralisQuery,
+	useMoralisSubscription,
+} from 'react-moralis';
 import { useEffect } from 'react';
 
 const Web3Context = createContext({
@@ -9,36 +14,9 @@ const Web3Context = createContext({
 });
 
 const Web3ContextProvider = ({ children }) => {
-	const {
-		Moralis,
-		isAuthenticated,
-		enableWeb3,
-		isWeb3Enabled,
-		isWeb3EnableLoading,
-	} = useMoralis();
-
-	useEffect(() => {
-		window.Moralis = Moralis;
-	});
-
-	useEffect(() => {
-		if (isAuthenticated && !isWeb3Enabled && !isWeb3EnableLoading) enableWeb3();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isAuthenticated, isWeb3Enabled]);
-	// const {
-	// 	web3,
-	// 	Moralis,
-	// 	isAuthenticated,
-	// 	enableWeb3,
-	// 	isWeb3Enabled,
-	// 	isWeb3EnableLoading,
-	// } = useMoralis();
-	// const [sf, setSf] = useState(null);
-	// const [sfProvider, setSfProvider] = useState(null);
-
-	// useEffect(() => {
-	// 	if (isAuthenticated && !isWeb3Enabled && !isWeb3EnableLoading) enableWeb3();
-	// }, [isAuthenticated, isWeb3Enabled, isWeb3EnableLoading]);
+	const { web3, Moralis, isWeb3Enabled } = useMoralis();
+	const [sf, setSf] = useState(null);
+	const [sfProvider, setSfProvider] = useState(null);
 
 	// useEffect(() => {
 	// 	(async () => {
@@ -57,22 +35,32 @@ const Web3ContextProvider = ({ children }) => {
 	// }, [isWeb3Enabled, web3]);
 
 	// Moralis Queries
-	// const {
-	// 	fetch: getDhedgeAssets,
-	// 	data: dhedgeAssets,
-	// 	error: dhedgeAssetsError,
-	// } = useMoralisQuery('DhedgeAsset', (query) => query.find(), [], {
-	// 	autoFetch: false,
-	// });
+	const {
+		fetch: getDhedgeAssets,
+		data: dhedgeAssets,
+		error: dhedgeAssetsError,
+	} = useMoralisQuery('DhedgeAsset', (query) => query.ascending('name'), [], {
+		autoFetch: false,
+	});
+	const {
+		fetch: getDhedgePools,
+		data: pools,
+		error: poolsError,
+		isLoading: isLoadingPools,
+	} = useMoralisQuery('SuperDhedgePool', (query) =>
+		query.ascending('leaderboardRank').limit(25)
+	);
 
 	return (
 		<Web3Context.Provider
-			value={{}}
-			// value={{
-			// 	sf: sf,
-			// 	sfProvider,
-			// 	isWeb3Enabled,
-			// }}
+			value={{
+				pools,
+				getDhedgePools,
+				dhedgeAssets,
+				poolsError,
+				dhedgeAssetsError,
+				isLoadingPools,
+			}}
 		>
 			{children}
 		</Web3Context.Provider>

@@ -4,30 +4,49 @@ import { Routes, Route, Navigate } from 'react-router';
 import extendedTheme from './theme';
 import DefaultLayout from './components/layouts/DefaultLayout';
 import Loader from './components/Loader';
-import React, { lazy } from 'react';
+import { lazy, createElement } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { Web3ContextProvider } from './context/Web3Context';
+import { useMoralis } from 'react-moralis';
+import { useEffect } from 'react';
 
 const App = () => {
+	const { isWeb3Enabled, enableWeb3, isAuthenticated, isWeb3EnableLoading } =
+		useMoralis();
+
+	useEffect(() => {
+		const connectorId = window.localStorage.getItem('connectorId');
+		if (isAuthenticated && !isWeb3Enabled && !isWeb3EnableLoading)
+			enableWeb3({ provider: connectorId });
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isAuthenticated, isWeb3Enabled]);
+
 	return (
-		<ChakraProvider theme={extendedTheme}>
-			<DefaultLayout>
-				<Routes>
-					<Route path='/'>
-						{paths.map(({ path, component }) => (
-							<Route
-								key={path}
-								path={path}
-								element={
-									<Suspense fallback={<Loader />}>
-										{React.createElement(component)}
-									</Suspense>
-								}></Route>
-						))}
-						{/* <Route path='*' element={<>Not Found</>} /> */}
-						<Route path='*' element={<Navigate to='/404' />} />
-					</Route>
-				</Routes>
-			</DefaultLayout>
-		</ChakraProvider>
+		<Web3ContextProvider>
+			<ChakraProvider theme={extendedTheme}>
+				<BrowserRouter>
+					<DefaultLayout>
+						<Routes>
+							<Route path='/'>
+								{paths.map(({ path, component }) => (
+									<Route
+										key={path}
+										path={path}
+										element={
+											<Suspense fallback={<Loader />}>
+												{createElement(component)}
+											</Suspense>
+										}
+									></Route>
+								))}
+								{/* <Route path='*' element={<>Not Found</>} /> */}
+								<Route path='*' element={<Navigate to='/404' />} />
+							</Route>
+						</Routes>
+					</DefaultLayout>
+				</BrowserRouter>
+			</ChakraProvider>
+		</Web3ContextProvider>
 	);
 };
 
