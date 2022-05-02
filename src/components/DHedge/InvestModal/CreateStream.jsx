@@ -41,8 +41,16 @@ const CreateStream = ({ poolData }) => {
 				}
 				return acc;
 			}, []);
-		}
+		} else return [];
 	}, [poolData]);
+
+	const [selectedToken, setSelectedToken] = useState(
+		depositSuperTokens.find((token) => token === defaultSelectedToken)
+	);
+	const handleSelect = (token) => {
+		setSelectedToken(token);
+		onClose();
+	};
 
 	const rateInputRef = useRef();
 	return (
