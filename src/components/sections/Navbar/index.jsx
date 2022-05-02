@@ -40,7 +40,8 @@ const Navbar = (props) => {
 				pos={'sticky'}
 				top={0}
 				wrap='wrap'
-				zIndex={999}>
+				zIndex={999}
+			>
 				<NavLink to='/'>
 					<Text fontSize='lg' fontWeight='bold'>
 						DeSIP
@@ -60,7 +61,8 @@ const Navbar = (props) => {
 							boxShadow={'md'}
 							p={4}
 							rounded={'md'}
-							bg={useColorModeValue('white', 'black')}>
+							bg={useColorModeValue('white', 'black')}
+						>
 							<VStack>
 								<NavLink w='full' to='/Super-dHEDGE'>
 									Super-dHEDGE
@@ -70,9 +72,6 @@ const Navbar = (props) => {
 					</Popover>
 
 					<NavLink to='/Dashboard'>Dashboard</NavLink>
-					<ExternalLink href='https://d-a-m-p.gitbook.io/dsip/'>
-						Docs
-					</ExternalLink>
 				</HStack>
 				<HStack>
 					{chain && (
@@ -80,7 +79,8 @@ const Navbar = (props) => {
 							size='md'
 							variant={chain?.chainId === '0x89' ? 'ghost' : 'outline'}
 							colorScheme={chain?.chainId === '0x89' ? 'green' : 'red'}
-							onClick={() => switchNetwork('0x89')}>
+							onClick={() => switchNetwork('0x89')}
+						>
 							{chain?.chainId === '0x89' ? 'Polygon' : 'Wrong Network'}
 						</Button>
 					)}
@@ -123,13 +123,15 @@ const MobileNav = ({ onToggle }) => {
 				duration={0.1}
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
-				exit={{ opacity: 0 }}>
+				exit={{ opacity: 0 }}
+			>
 				<NavLink
 					to='/'
 					display='block'
 					textAlign='center'
 					width='100%'
-					onClick={onToggle}>
+					onClick={onToggle}
+				>
 					Home
 				</NavLink>
 				<NavLink
@@ -137,7 +139,8 @@ const MobileNav = ({ onToggle }) => {
 					display='block'
 					width='100%'
 					textAlign='center'
-					onClick={onToggle}>
+					onClick={onToggle}
+				>
 					Super-Suite
 				</NavLink>
 				<NavLink
@@ -145,7 +148,8 @@ const MobileNav = ({ onToggle }) => {
 					display='block'
 					width='100%'
 					textAlign='center'
-					onClick={onToggle}>
+					onClick={onToggle}
+				>
 					Dashboard
 				</NavLink>
 				<ExternalLink
@@ -153,7 +157,8 @@ const MobileNav = ({ onToggle }) => {
 					display='block'
 					width='100%'
 					textAlign='center'
-					onClick={onToggle}>
+					onClick={onToggle}
+				>
 					Docs
 				</ExternalLink>
 			</MotionVStack>
