@@ -3,8 +3,6 @@ import {
 	Text,
 	useColorModeValue,
 	Grid,
-	AccordionItem,
-	AccordionButton,
 	VStack,
 	Tooltip,
 	Icon,
@@ -14,6 +12,7 @@ import {
 	Stack,
 	useDisclosure,
 	Button,
+	Box,
 } from '@chakra-ui/react';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import InvestModal from '../InvestModal';
@@ -35,21 +34,22 @@ const PoolTableItem = ({ poolData }) => {
 		<>
 			<InvestModal poolData={poolData} isOpen={isOpen} onClose={onClose} />
 
-			<AccordionItem
+			<Box
 				{...border}
 				my='6'
-				bg={useColorModeValue('whiteAlpha.500', 'blackAlpha.400')}>
+				bg={useColorModeValue('whiteAlpha.500', 'blackAlpha.400')}
+			>
 				<PoolAccordionButton onOpen={onOpen} poolData={poolData} />
 
 				<PoolTablePanel></PoolTablePanel>
-			</AccordionItem>
+			</Box>
 		</>
 	);
 };
 
 const PoolAccordionButton = ({ onOpen, poolData }) => {
 	return (
-		<AccordionButton py='10' _hover={{ background: 'none' }}>
+		<Box py='10' _hover={{ background: 'none' }}>
 			<Grid
 				w='full'
 				templateColumns={{
@@ -59,14 +59,16 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 				gap='4'
 				rowGap='8'
 				alignItems={{ base: 'end' }}
-				m='auto'>
+				m='auto'
+			>
 				{/* Pool Image, Name and Invest Button */}
 				<Stack
 					spacing='2'
 					justify='center'
 					align='center'
 					direction={['column', 'row', 'row']}
-					alignSelf={{ base: 'end', md: 'center' }}>
+					alignSelf={{ base: 'end', md: 'center' }}
+				>
 					<Image
 						boxSize='16'
 						rounded={'md'}
@@ -83,7 +85,8 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 						<Button
 							variant='ghost'
 							onClick={(e) => e.preventDefault() || onOpen()}
-							size='sm'>
+							size='sm'
+						>
 							Invest
 						</Button>
 					</VStack>
@@ -117,7 +120,8 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 						<Tooltip
 							label='Total Value Streaming'
 							hasArrow
-							aria-label='Total Value Streaming'>
+							aria-label='Total Value Streaming'
+						>
 							<Flex as='span' ml='2'>
 								<Icon as={AiOutlineInfoCircle} w={4} h={4} />
 							</Flex>
@@ -140,7 +144,7 @@ const PoolAccordionButton = ({ onOpen, poolData }) => {
 					</HStack>
 				</VStack>
 			</Grid>
-		</AccordionButton>
+		</Box>
 	);
 };
 
