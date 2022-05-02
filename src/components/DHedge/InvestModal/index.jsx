@@ -15,11 +15,23 @@ import {
 	useMediaQuery,
 	Box,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import CreateStream from './CreateStream';
 import PoolDetails from '../PoolDetails';
+import { useContext, useMemo } from 'react';
+import { Web3Context } from '../../../context/Web3Context';
 
-const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
+const InvestModal = ({ isOpen, onClose }) => {
+	const { pools } = useContext(Web3Context);
+
+	let [searchParams] = useSearchParams();
+	let poolAddress = searchParams.get('pool');
+	const poolData = useMemo(
+		() =>
+			pools?.find((p) => p.get('superPoolAddress') === poolAddress)?.attributes,
+		[pools, poolAddress]
+	);
+
 	const navigate = useNavigate();
 	const closeModal = () => {
 		if (onClose) onClose();
@@ -35,13 +47,15 @@ const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 			scrollBehavior={'inside'}
 			size='5xl'
 			isCentered
-			blockScrollOnMount>
+			blockScrollOnMount
+		>
 			<ModalOverlay />
 			<ModalContent
 				height='80%'
 				background={useColorModeValue('white', 'bg.dark.900')}
 				borderWidth='1px'
-				borderColor={useColorModeValue('gray.200', 'blue.700')}>
+				borderColor={useColorModeValue('gray.200', 'blue.700')}
+			>
 				<ModalHeader textAlign={'center'} fontSize='2xl'>
 					Start New Stream
 				</ModalHeader>
@@ -63,7 +77,7 @@ const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 
 								<TabPanel>
 									<Box w='100%'>
-										<CreateStream />
+										<CreateStream poolData={poolData} />
 									</Box>
 								</TabPanel>
 							</TabPanels>
@@ -73,7 +87,7 @@ const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 							<PoolDetails poolData={poolData} />
 
 							<Box w='50%'>
-								<CreateStream />
+								<CreateStream poolData={poolData} />
 							</Box>
 						</Flex>
 					)}
@@ -81,42 +95,6 @@ const InvestModal = ({ poolData = dummyData, isOpen, onClose }) => {
 			</ModalContent>
 		</Modal>
 	);
-};
-
-const dummyData = {
-	imageURL:
-		'https://pbs.twimg.com/profile_images/1417404802821152798/7kLneVlp_200x200.jpg',
-	address: '0x144df3929ae3af097585534135454f7fbcce0c1e',
-	managerName: 'Crypto Family Capital',
-	name: 'Crypto Family Pool',
-	poolDetails: null,
-	leaderboardRank: 63,
-	riskFactor: 3,
-	totalValue: '6798026087732035300312',
-	performanceFactor: '1000000000000000000',
-	performance: '1579695289378430345',
-	performanceMetrics: {
-		day: '1000170777382778131',
-		month: '1004364149411701403',
-		year: '1579754734930654181',
-		quarter: '978397687970010176',
-		week: '1000262012357288639',
-		halfyear: '1553159587044043575',
-	},
-	assets: [
-		{
-			name: 'BTC',
-			icon: 'https://dhedge.org/assets/images/icons/btc.svg',
-		},
-		{
-			name: 'USDC',
-			icon: 'https://app.dhedge.org/static/media/usdc.c8fcab48.svg',
-		},
-		{
-			name: 'USDT',
-			icon: 'https://app.dhedge/static/media/usdc.c8fcab48.svg',
-		},
-	],
 };
 
 export default InvestModal;

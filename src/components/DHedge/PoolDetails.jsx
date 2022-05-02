@@ -20,8 +20,16 @@ import {
 } from '@chakra-ui/react';
 import AssetTag from '../AssetTag';
 import PoolImage from '../PoolImage';
+import useDhedgePerformanceMetric from '../../hooks/useDhedgePerformanceMetric';
+import numberFormatter from '../../utils/numberFormatter';
+import { useMoralis } from 'react-moralis';
+import { useContext } from 'react';
+import { Web3Context } from '../../context/Web3Context';
 
 const PoolDetails = ({ poolData }) => {
+	const { Moralis } = useMoralis();
+	const { assetLookup } = useContext(Web3Context);
+
 	return (
 		<Flex
 			mb='6'
@@ -33,14 +41,16 @@ const PoolDetails = ({ poolData }) => {
 			gap='8'
 			overflow='auto'
 			px='4'
-			alignSelf='center'>
+			alignSelf='center'
+		>
 			<HStack
 				pos={'relative'}
 				maxW={'100%'}
 				spacing={2}
 				direction='column'
 				align={'center'}
-				gap='4'>
+				gap='4'
+			>
 				<PoolImage imageURL={poolData?.imageURL} />
 				<VStack align='flex-start'>
 					<Heading as='h6' fontSize={'xl'} fontWeight={500}>
@@ -63,9 +73,14 @@ const PoolDetails = ({ poolData }) => {
 					w='100%'
 					maxWidth={{ base: '40ch' }}
 					m='auto'
-					wrap='wrap'>
-					{poolData.assets.map((asset) => (
-						<AssetTag key={asset.name} name={asset.name} icon={asset.icon} />
+					wrap='wrap'
+				>
+					{poolData?.supportedDepositTokens?.map((tokenAddress) => (
+						<AssetTag
+							key={tokenAddress}
+							name={assetLookup[tokenAddress]?.name}
+							icon={assetLookup[tokenAddress]?.imageURL}
+						/>
 					))}
 				</HStack>
 			</Box>
@@ -76,7 +91,8 @@ const PoolDetails = ({ poolData }) => {
 				maxW='50ch'
 				justify='space-between'
 				flexDirection='column'
-				align={'center'}>
+				align={'center'}
+			>
 				<HStack
 					bg={useColorModeValue('blackAlpha.50', 'whiteAlpha.50')}
 					w='100%'
@@ -84,22 +100,26 @@ const PoolDetails = ({ poolData }) => {
 					maxW={'35ch'}
 					rounded='md'
 					justify='space-around'
-					p='4'>
+					p='4'
+				>
 					<VStack align='start'>
-						<Text fontSize='sm' fontWeight={500} as='label'>
+						<Text fontSize='sm' fontWeight={400} as='label'>
 							TVM
 						</Text>
-						<Text fontSize='lg' fontWeight={700}>
-							$124.75K
+						<Text fontSize='lg' fontWeight={600}>
+							$
+							{numberFormatter(
+								Moralis.Units.FromWei(poolData?.totalValue || '0')
+							)}
 						</Text>
 					</VStack>
 					<Divider orientation='vertical' borderColor={'gray.500'} />
 					<VStack align='start'>
-						<Text fontSize='sm' fontWeight={500} as='label'>
+						<Text fontSize='sm' fontWeight={400} as='label'>
 							Risk Factor
 						</Text>
-						<Text fontSize='lg' fontWeight={500}>
-							4/5
+						<Text fontSize='lg' fontWeight={600}>
+							{poolData?.riskFactor}/5
 						</Text>
 					</VStack>
 				</HStack>
@@ -115,10 +135,30 @@ const PoolDetails = ({ poolData }) => {
 					</Thead>
 					<Tbody>
 						<Tr>
-							<Td textAlign='center'>10%</Td>
-							<Td textAlign='center'>-2%</Td>
-							<Td textAlign='center'>-5%</Td>
-							<Td textAlign='center'>5%</Td>
+							<Td textAlign='center'>
+								{useDhedgePerformanceMetric(
+									poolData?.performanceMetrics?.['month'],
+									poolData?.performanceFactor
+								)}
+							</Td>
+							<Td textAlign='center'>
+								{useDhedgePerformanceMetric(
+									poolData?.performanceMetrics?.['halfyear'],
+									poolData?.performanceFactor
+								)}
+							</Td>
+							<Td textAlign='center'>
+								{useDhedgePerformanceMetric(
+									poolData?.performanceMetrics?.['year'],
+									poolData?.performanceFactor
+								)}
+							</Td>
+							<Td textAlign='center'>
+								{useDhedgePerformanceMetric(
+									poolData?.performance,
+									poolData?.performanceFactor
+								)}
+							</Td>
 						</Tr>
 					</Tbody>
 				</Table>
@@ -127,7 +167,8 @@ const PoolDetails = ({ poolData }) => {
 			<Flex width={'100%'} justifyContent='space-evenly'>
 				<ExternalLink
 					color={useColorModeValue('blue.700', 'blue.500')}
-					href={`https://app.dhedge.org/pool/${poolData.address}`}>
+					href={`https://app.dhedge.org/pool/${poolData?.dhedgeFundAddress}`}
+				>
 					Visit dHEDGE Pool <Icon as={FiExternalLink} />
 				</ExternalLink>
 			</Flex>

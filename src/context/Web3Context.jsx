@@ -42,13 +42,30 @@ const Web3ContextProvider = ({ children }) => {
 	} = useMoralisQuery('DhedgeAsset', (query) => query.ascending('name'), [], {
 		autoFetch: false,
 	});
+	useEffect(() => {
+		getDhedgeAssets();
+	}, [getDhedgeAssets]);
+
+	const assetLookup = useMemo(() => {
+		if (!dhedgeAssets) return null;
+		return dhedgeAssets.reduce((acc, asset) => {
+			acc[asset.attributes?.address] = asset.attributes;
+			return acc;
+		}, {});
+	}, [dhedgeAssets]);
+
 	const {
 		fetch: getDhedgePools,
 		data: pools,
 		error: poolsError,
 		isLoading: isLoadingPools,
-	} = useMoralisQuery('SuperDhedgePool', (query) =>
-		query.ascending('leaderboardRank').limit(25)
+	} = useMoralisQuery(
+		'SuperDhedgePool',
+		(query) => query.ascending('leaderboardRank').limit(25),
+		[],
+		{
+			autoFetch: false,
+		}
 	);
 
 	return (
@@ -57,6 +74,7 @@ const Web3ContextProvider = ({ children }) => {
 				pools,
 				getDhedgePools,
 				dhedgeAssets,
+				assetLookup,
 				poolsError,
 				dhedgeAssetsError,
 				isLoadingPools,

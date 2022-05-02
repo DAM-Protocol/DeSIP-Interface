@@ -22,11 +22,9 @@ import { useMoralis } from 'react-moralis';
 import useDhedgePerformanceMetric from '../../hooks/useDhedgePerformanceMetric';
 import PoolImage from '../PoolImage';
 
-const PoolCard = ({ poolAttributes }) => {
+const PoolCard = ({ poolData }) => {
 	const navigate = useNavigate();
 	const { Moralis } = useMoralis();
-	// { name, imageURL, managerName, riskFactor, poolDetails },
-	console.log(poolAttributes);
 
 	return (
 		<Center py={6} minW={'200px'}>
@@ -41,14 +39,15 @@ const PoolCard = ({ poolAttributes }) => {
 				boxShadow={'xl'}
 				rounded={'lg'}
 				pos={'relative'}
-				zIndex={1}>
-				<PoolImage card imageURL={poolAttributes?.imageURL} />
+				zIndex={1}
+			>
+				<PoolImage card imageURL={poolData?.imageURL} />
 
 				<Heading textAlign='center' as='h5' fontSize={'lg'} fontWeight={500}>
-					{poolAttributes?.name}
+					{poolData?.name}
 				</Heading>
 				<Text textAlign='center' color={'gray.500'} fontSize='sm'>
-					{poolAttributes.managerName}
+					{poolData?.managerName}
 				</Text>
 				<Flex
 					pt={5}
@@ -56,7 +55,8 @@ const PoolCard = ({ poolAttributes }) => {
 					width={'100%'}
 					justify='space-between'
 					flexDirection='column'
-					align={'center'}>
+					align={'center'}
+				>
 					<HStack
 						bg={useColorModeValue('gray.50', 'whiteAlpha.100')}
 						w='100%'
@@ -64,25 +64,28 @@ const PoolCard = ({ poolAttributes }) => {
 						maxW={'35ch'}
 						rounded='md'
 						justify='space-around'
-						p='4'>
-						<VStack align='start'>
+						p='4'
+					>
+						<VStack align='start' w='7ch'>
 							<Text fontSize='xs' fontWeight={500} as='label'>
 								TVM
 							</Text>
 							<Text fontSize='sm' fontWeight={500}>
 								$
 								{numberFormatter(
-									Moralis.Units.FromWei(poolAttributes?.totalValue || '0')
+									Moralis.Units.FromWei(poolData?.totalValue || '0')
 								)}
 							</Text>
 						</VStack>
+
 						<Divider orientation='vertical' borderColor={'gray.500'} />
-						<VStack align='start'>
+
+						<VStack align='start' w='7ch'>
 							<Text fontSize='xs' fontWeight={500} as='label'>
 								Risk Factor
 							</Text>
 							<Text fontSize='sm' fontWeight={500}>
-								{poolAttributes?.riskFactor}/5
+								{poolData?.riskFactor}/5
 							</Text>
 						</VStack>
 					</HStack>
@@ -99,20 +102,20 @@ const PoolCard = ({ poolAttributes }) => {
 							<Tr>
 								<Td textAlign='center'>
 									{useDhedgePerformanceMetric(
-										poolAttributes.performanceMetrics['month'],
-										poolAttributes.performanceFactor
+										poolData?.performanceMetrics?.['month'],
+										poolData?.performanceFactor
 									)}
 								</Td>
 								<Td textAlign='center'>
 									{useDhedgePerformanceMetric(
-										poolAttributes.performanceMetrics['year'],
-										poolAttributes.performanceFactor
+										poolData?.performanceMetrics?.['year'],
+										poolData?.performanceFactor
 									)}
 								</Td>
 								<Td textAlign='center'>
 									{useDhedgePerformanceMetric(
-										poolAttributes.performance,
-										poolAttributes.performanceFactor
+										poolData?.performance,
+										poolData?.performanceFactor
 									)}
 								</Td>
 							</Tr>
@@ -123,17 +126,17 @@ const PoolCard = ({ poolAttributes }) => {
 							colorScheme='blue'
 							variant='outline'
 							onClick={() =>
-								navigate(
-									`/Super-dHEDGE/?pool=${poolAttributes?.superPoolAddress}`
-								)
-							}>
+								navigate(`/Super-dHEDGE/?pool=${poolData?.superPoolAddress}`)
+							}
+						>
 							Stream
 						</Button>
 						<Button
 							onClick={() =>
-								navigate(`/Super-dHEDGE/${poolAttributes?.superPoolAddress}`)
+								navigate(`/Super-dHEDGE/${poolData?.superPoolAddress}`)
 							}
-							variant={'unstyled'}>
+							variant={'unstyled'}
+						>
 							Explore
 						</Button>
 					</HStack>

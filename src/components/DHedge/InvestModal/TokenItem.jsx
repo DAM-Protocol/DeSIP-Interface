@@ -1,14 +1,15 @@
 import { Button, Flex, Image, Spacer, Badge } from '@chakra-ui/react';
 import React from 'react';
 
-const TokenItem = ({ icon, symbol, name, address, handleSelect }) => {
+const TokenItem = ({ icon, symbol, superTokenAddress, handleSelect }) => {
 	return (
 		<Flex
 			as={Button}
 			variant='ghost'
-			onClick={() => handleSelect({ symbol, address, icon })}
+			onClick={() => handleSelect({ symbol, superTokenAddress, icon })}
 			justify='space-between'
-			width={'100%'}>
+			width={'100%'}
+		>
 			<Image
 				boxSize={'1.25rem'}
 				borderRadius='50%'
@@ -22,7 +23,7 @@ const TokenItem = ({ icon, symbol, name, address, handleSelect }) => {
 			<span>{symbol}</span>
 			<Spacer />
 			<Badge borderRadius='sm' p='2'>
-				{name}
+				{symbol}x
 			</Badge>
 		</Flex>
 	);

@@ -7,15 +7,18 @@ import {
 	ModalBody,
 	ModalHeader,
 } from '@chakra-ui/react';
+import { useContext } from 'react';
+import { Web3Context } from '../../../context/Web3Context';
 import TokenItem from './TokenItem';
 
 const TokenSelector = ({
 	isOpen,
 	onClose,
 	handleSelect,
-	tokenList,
+	depositSuperTokens,
 	finalFocusRef,
 }) => {
+	const { assetLookup } = useContext(Web3Context);
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -23,7 +26,8 @@ const TokenSelector = ({
 			isCentered
 			motionPreset='slideInBottom'
 			scrollBehavior='inside'
-			finalFocusRef={finalFocusRef}>
+			finalFocusRef={finalFocusRef}
+		>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Select A Super Token</ModalHeader>
@@ -35,14 +39,15 @@ const TokenSelector = ({
 						my={5}
 						maxHeight='80%'
 						minHeight='20rem'
-						gap='4'>
-						{tokenList.map((token, index) => (
+						gap='4'
+					>
+						{depositSuperTokens?.map((token) => (
 							<TokenItem
-								key={index}
-								icon={token.icon}
-								name={token.name}
-								symbol={token.symbol}
-								address={token.address}
+								key={token.address}
+								icon={assetLookup?.[token.address]?.imageURL}
+								name={assetLookup?.[token.address]?.name}
+								symbol={assetLookup?.[token.address]?.name}
+								superTokenAddress={token.superTokenAddress}
 								handleSelect={handleSelect}
 							/>
 						))}
