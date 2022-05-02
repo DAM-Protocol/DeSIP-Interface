@@ -1,12 +1,7 @@
-import { Framework } from '@superfluid-finance/sdk-core';
-import { createContext, useState, useMemo } from 'react';
-import {
-	useMoralis,
-	useMoralisWeb3Api,
-	useMoralisQuery,
-	useMoralisSubscription,
-} from 'react-moralis';
+import { createContext, useMemo } from 'react';
+import { useMoralis, useMoralisQuery } from 'react-moralis';
 import { useEffect } from 'react';
+import useSuperfluid from '../hooks/useSuperfluid';
 
 const Web3Context = createContext({
 	web3: null,
@@ -14,25 +9,7 @@ const Web3Context = createContext({
 });
 
 const Web3ContextProvider = ({ children }) => {
-	const { web3, Moralis, isWeb3Enabled } = useMoralis();
-	const [sf, setSf] = useState(null);
-	const [sfProvider, setSfProvider] = useState(null);
-
-	// useEffect(() => {
-	// 	(async () => {
-	// 		if (!isWeb3Enabled) return null;
-
-	// 		const ethers = Moralis.web3Library;
-	// 		const mmProvider = new ethers.providers.Web3Provider(window.ethereum);
-
-	// 		const _sf = await Framework.create({
-	// 			networkName: 'polygon',
-	// 			provider: mmProvider,
-	// 		});
-	// 		setSfProvider(mmProvider);
-	// 		setSf(_sf);
-	// 	})();
-	// }, [isWeb3Enabled, web3]);
+	const { sfProvider, sf, initialiseSf } = useSuperfluid();
 
 	// Moralis Queries
 	const {
@@ -63,9 +40,7 @@ const Web3ContextProvider = ({ children }) => {
 		'SuperDhedgePool',
 		(query) => query.ascending('leaderboardRank').limit(25),
 		[],
-		{
-			autoFetch: false,
-		}
+		{ autoFetch: false }
 	);
 
 	return (
@@ -78,6 +53,9 @@ const Web3ContextProvider = ({ children }) => {
 				poolsError,
 				dhedgeAssetsError,
 				isLoadingPools,
+				sfProvider,
+				sf,
+				initialiseSf,
 			}}
 		>
 			{children}
