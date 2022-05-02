@@ -110,7 +110,7 @@ const WalletSelectorModal = ({
 	const { authenticate } = useMoralis();
 	const login = async (connectorId) => {
 		try {
-			await authenticate({ provider: connectorId });
+			await authenticate({ provider: connectorId, chainId: 137 });
 			window.localStorage.setItem('connectorId', connectorId);
 			toggleWalletSelector();
 		} catch (e) {
@@ -145,7 +145,9 @@ const WalletSelectorModal = ({
 								h='20'
 								p='4'
 								variant='outline'
-								leftIcon={<Image src={icon} alt={title} boxSize='30' />}
+								leftIcon={
+									<Image src={icon} alt={title + connectorId} boxSize='30' />
+								}
 								key={key}
 								onClick={() => login(connectorId)}
 							>

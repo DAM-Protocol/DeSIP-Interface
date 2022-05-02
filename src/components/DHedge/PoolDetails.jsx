@@ -13,7 +13,6 @@ import {
 	Tbody,
 	Td,
 	Icon,
-	Image,
 	VStack,
 	Heading,
 	Divider,
@@ -34,14 +33,13 @@ const PoolDetails = ({ poolData }) => {
 		<Flex
 			mb='6'
 			w={{ base: '100%', md: '50%' }}
-			h='100%'
+			maxH='100%'
 			direction='column'
 			justify='space-between'
 			align='center'
-			gap='8'
+			gap='10'
 			overflow='auto'
 			px='4'
-			alignSelf='center'
 		>
 			<HStack
 				pos={'relative'}
@@ -106,7 +104,7 @@ const PoolDetails = ({ poolData }) => {
 						<Text fontSize='sm' fontWeight={400} as='label'>
 							TVM
 						</Text>
-						<Text fontSize='lg' fontWeight={600}>
+						<Text fontSize='lg' fontWeight={500}>
 							$
 							{numberFormatter(
 								Moralis.Units.FromWei(poolData?.totalValue || '0')
@@ -118,7 +116,7 @@ const PoolDetails = ({ poolData }) => {
 						<Text fontSize='sm' fontWeight={400} as='label'>
 							Risk Factor
 						</Text>
-						<Text fontSize='lg' fontWeight={600}>
+						<Text fontSize='lg' fontWeight={500}>
 							{poolData?.riskFactor}/5
 						</Text>
 					</VStack>

@@ -52,6 +52,7 @@ const InvestModal = ({ isOpen, onClose }) => {
 			<ModalOverlay />
 			<ModalContent
 				height='80%'
+				maxH='2xl'
 				background={useColorModeValue('white', 'bg.dark.900')}
 				borderWidth='1px'
 				borderColor={useColorModeValue('gray.200', 'blue.700')}
@@ -76,9 +77,7 @@ const InvestModal = ({ isOpen, onClose }) => {
 								</TabPanel>
 
 								<TabPanel>
-									<Box w='100%'>
-										<CreateStream poolData={poolData} />
-									</Box>
+									<CreateStream poolData={poolData} />
 								</TabPanel>
 							</TabPanels>
 						</Tabs>
