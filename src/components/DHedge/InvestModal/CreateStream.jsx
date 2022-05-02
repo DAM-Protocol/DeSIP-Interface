@@ -12,17 +12,37 @@ import {
 	InputLeftElement,
 	Image,
 } from '@chakra-ui/react';
-import { useState, useRef } from 'react';
-import { defaultTokenList } from './defaultTokenList';
+import { useState, useRef, useMemo } from 'react';
 import TokenSelector from './TokenSelector';
 
-const CreateStream = () => {
+const CreateStream = ({ poolData }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [selectedToken, setSelectedToken] = useState(defaultTokenList[0]);
+	const [selectedToken, setSelectedToken] = useState();
 	const handleSelect = (token) => {
 		setSelectedToken(token);
 		onClose();
 	};
+
+	const depositSuperTokens = useMemo(() => {
+		// array of erc20 token addresses
+		const supportedDepositTokens = poolData?.supportedDepositTokens;
+
+		// object with erc20 address key and supertoken address value
+		const supportedSuperTokens = poolData?.supportedSuperTokens;
+
+		if (supportedDepositTokens && supportedSuperTokens) {
+			// return common supertokens
+			return supportedDepositTokens.reduce((acc, curr) => {
+				if (supportedSuperTokens[curr]) {
+					acc.push({
+						address: curr,
+						superTokenAddress: supportedSuperTokens[curr],
+					});
+				}
+				return acc;
+			}, []);
+		}
+	}, [poolData]);
 
 	const rateInputRef = useRef();
 	return (
@@ -30,7 +50,8 @@ const CreateStream = () => {
 			<Alert
 				status='warning'
 				borderRadius='md'
-				bg={useColorModeValue('yellow.50', 'yellow.900')}>
+				bg={useColorModeValue('yellow.50', 'yellow.900')}
+			>
 				<AlertIcon />
 				Do your own research about the pools before streaming.
 			</Alert>
@@ -39,7 +60,7 @@ const CreateStream = () => {
 				isOpen={isOpen}
 				onClose={onClose}
 				handleSelect={handleSelect}
-				tokenList={defaultTokenList}
+				depositSuperTokens={depositSuperTokens}
 				finalFocusRef={rateInputRef}
 			/>
 
