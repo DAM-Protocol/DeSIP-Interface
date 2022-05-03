@@ -18,13 +18,8 @@ import {
 	ModalOverlay,
 	ModalContent,
 	ModalHeader,
-	ModalCloseButton,
 	ModalBody,
-	HStack,
-	ButtonGroup,
 	Image,
-	Box,
-	Stack,
 	Flex,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -162,4 +157,5 @@ const WalletSelectorModal = ({
 		</Modal>
 	);
 };
+
 export default UserMenu;

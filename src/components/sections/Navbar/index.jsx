@@ -48,7 +48,7 @@ const Navbar = (props) => {
 					</Text>
 				</NavLink>
 
-				<HStack display={{ base: 'none', sm: 'flex' }}>
+				<Flex display={{ base: 'none', sm: 'flex' }}>
 					<NavLink to='/'>Home</NavLink>
 
 					<Popover trigger={'hover'} placement={'bottom-start'}>
@@ -72,8 +72,8 @@ const Navbar = (props) => {
 					</Popover>
 
 					<NavLink to='/Dashboard'>Dashboard</NavLink>
-				</HStack>
-				<HStack>
+				</Flex>
+				<HStack spacing='0'>
 					{chain && (
 						<Button
 							size='md'
