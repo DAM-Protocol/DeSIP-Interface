@@ -92,11 +92,7 @@ const syncDhedgeAssets = async (request) => {
 						newAsset.set('description', description);
 
 						await newAsset.save(null, { useMasterKey: true }).then(
-							(object) => {
-								logger.info(
-									'[LOG] : New asset created with objectId: ' + object.id
-								);
-							},
+							() => {},
 							(error) => {
 								logger.info(
 									'[LOG] : Error creating asset for ' +
@@ -166,7 +162,22 @@ const syncDhedgeFunds = async (request) => {
 
 			superDhedgePool.set('managerName', fundData.managerName);
 			superDhedgePool.set('name', fundData.name);
+
+			// update prevAdjustedTokenPrice if lastUpdated one day ago
+			if (
+				!superDhedgePool.get('prevAdjustedTokenPrice')?.updatedAt ||
+				(Date.now() - superDhedgePool.get('prevAdjustedTokenPrice').updatedAt) /
+					86400000 >=
+					1
+			) {
+				superDhedgePool.set('prevAdjustedTokenPrice', {
+					updatedAt: Date.now(),
+					price: superDhedgePool.get('adjustedTokenPrice'),
+				});
+			}
+			// set current token price
 			superDhedgePool.set('adjustedTokenPrice', fundData.adjustedTokenPrice);
+
 			superDhedgePool.set('tokenPrice', fundData.tokenPrice);
 			superDhedgePool.set('performance', fundData.performance);
 			superDhedgePool.set('fundId', fundData.id);
