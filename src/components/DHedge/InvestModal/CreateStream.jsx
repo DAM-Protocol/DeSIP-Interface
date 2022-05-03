@@ -12,16 +12,19 @@ import {
 	InputLeftElement,
 	Image,
 } from '@chakra-ui/react';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect, useContext } from 'react';
+import { useMoralis } from 'react-moralis';
+import { Web3Context } from '../../../context/Web3Context';
 import TokenSelector from './TokenSelector';
 
-const CreateStream = ({ poolData }) => {
+const CreateStream = ({ poolData, defaultSelectedToken }) => {
+	const { isWeb3Enabled } = useMoralis();
+	const { superfluidProvider, initialiseSf } = useContext(Web3Context);
+	useEffect(() => {
+		if (!superfluidProvider && isWeb3Enabled) initialiseSf();
+	}, [isWeb3Enabled, initialiseSf, superfluidProvider]);
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [selectedToken, setSelectedToken] = useState();
-	const handleSelect = (token) => {
-		setSelectedToken(token);
-		onClose();
-	};
 
 	const depositSuperTokens = useMemo(() => {
 		// array of erc20 token addresses
@@ -88,6 +91,7 @@ const CreateStream = ({ poolData }) => {
 					<Input
 						type='text'
 						id='supertoken'
+						autoComplete='off'
 						onClick={onOpen}
 						onKeyUp={(e) => {
 							if (e.key === 'Enter') e.target.blur();
@@ -96,14 +100,20 @@ const CreateStream = ({ poolData }) => {
 						}}
 						cursor='pointer'
 						onChange={() => {}}
-						value={selectedToken?.symbol}
+						value={selectedToken ? selectedToken?.symbol + 'x' : ''}
 					/>
 				</InputGroup>
 			</FormControl>
 
-			<FormControl>
+			<FormControl aria-autocomplete='none'>
 				<label htmlFor='rate'> Rate (Tokens/month)</label>
-				<Input type='number' id='rate' ref={rateInputRef} />
+				<Input
+					min={0}
+					autoComplete='new-password'
+					type='number'
+					id='rate'
+					ref={rateInputRef}
+				/>
 			</FormControl>
 
 			<Spacer />

@@ -30,7 +30,12 @@ import numberFormatter from '../../utils/numberFormatter';
 const SuperPool = () => {
 	const { pools } = useContext(Web3Context);
 	const { poolAddress } = useParams();
-	const { Moralis } = useMoralis();
+	const { Moralis, isWeb3Enabled } = useMoralis();
+
+	const { superfluidProvider, initialiseSf } = useContext(Web3Context);
+	useEffect(() => {
+		if (!superfluidProvider && isWeb3Enabled) initialiseSf();
+	}, [isWeb3Enabled, initialiseSf, superfluidProvider]);
 
 	const {
 		fetch: getDhedgePool,
@@ -59,6 +64,7 @@ const SuperPool = () => {
 	}, [poolAddress]);
 
 	const [defaultSelectedToken, setDefaultSelectedToken] = useState();
+
 	const percentagePriceChange = useMemo(() => {
 		const curPrice = Moralis.Units.FromWei(poolData?.adjustedTokenPrice || 0);
 		const prevPrice = Moralis.Units.FromWei(
@@ -68,6 +74,7 @@ const SuperPool = () => {
 	}, [Moralis, poolData]);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
+
 	return (
 		<Page bg>
 			<Stack
@@ -75,8 +82,7 @@ const SuperPool = () => {
 				wrap='wrap'
 				spacing='0'
 				justify={{ xl: 'start', base: 'center' }}
-				height='calc(100vh - 12rem)'
-				maxH='xl'
+				maxH={{ base: 'none', xl: 'xl' }}
 			>
 				<PoolDetails poolData={poolData} />
 
@@ -84,14 +90,15 @@ const SuperPool = () => {
 					w={{ base: '100%', lg: '50%' }}
 					p='4'
 					py='6'
-					h='100%'
+					h='xl'
 					bg={useColorModeValue('bg.white.50', 'bg.dark.950')}
 					border='1px solid'
 					borderColor={useColorModeValue('gray.200', 'blue.800')}
 					borderRadius='md'
+					maxH='xl'
 				>
 					<HStack w='100%' align='end'>
-						<StatGroup w='100%' px='10' py='6' zIndex='9'>
+						<StatGroup w='100%' px={{ base: '4', md: '10' }} py='6' zIndex='9'>
 							<Stat>
 								<StatLabel color='gray.400'>Balance (DHPTx)</StatLabel>
 
@@ -121,11 +128,13 @@ const SuperPool = () => {
 					</HStack>
 
 					<Divider />
+
 					<Box overflow='auto' w='100%'>
-						<AssetTable poolAssets={{}} />
+						<AssetTable poolData={poolData} />
 					</Box>
 
 					<Spacer />
+
 					<HStack>
 						<Button onClick={onOpen} py='4' colorScheme='blue'>
 							New Stream

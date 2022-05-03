@@ -6,10 +6,20 @@ import useSuperfluid from '../hooks/useSuperfluid';
 const Web3Context = createContext({
 	web3: null,
 	chainId: null,
+	pools: null,
+	getDhedgePools: () => {},
+	dhedgeAssets: null,
+	assetLookup: null,
+	poolsError: null,
+	dhedgeAssetsError: null,
+	isLoadingPools: null,
+	sfProvider: null,
+	sf: null,
+	initialiseSf: () => {},
 });
 
 const Web3ContextProvider = ({ children }) => {
-	const { sfProvider, sf, initialiseSf } = useSuperfluid();
+	const { sfProvider, sf, initialiseSf, sfSigner } = useSuperfluid();
 
 	// Moralis Queries
 	const {
@@ -55,6 +65,7 @@ const Web3ContextProvider = ({ children }) => {
 				isLoadingPools,
 				sfProvider,
 				sf,
+				sfSigner,
 				initialiseSf,
 			}}
 		>
