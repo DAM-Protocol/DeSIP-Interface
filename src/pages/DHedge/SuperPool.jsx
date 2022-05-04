@@ -1,36 +1,16 @@
-import {
-	Box,
-	Button,
-	Divider,
-	HStack,
-	Spacer,
-	Stack,
-	Stat,
-	StatArrow,
-	StatGroup,
-	StatHelpText,
-	StatLabel,
-	StatNumber,
-	Text,
-	useColorModeValue,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import Page from '../../components/layouts/Page';
 import PoolDetails from '../../components/DHedge/PoolDetails';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Web3Context } from '../../context/Web3Context';
 import { useMoralis, useMoralisQuery } from 'react-moralis';
-import StreamTable from '../../components/DHedge/Dashboard/StreamTable';
-import CreateStream from '../../components/DHedge/InvestModal/CreateStream';
-import ModalLayout from '../../components/layouts/ModalLayout';
-import numberFormatter from '../../utils/numberFormatter';
+import UserPoolData from '../../components/DHedge/UserPoolData';
 
 const SuperPool = () => {
 	const { pools } = useContext(Web3Context);
 	const { poolAddress } = useParams();
-	const { Moralis, isWeb3Enabled } = useMoralis();
+	const { isWeb3Enabled } = useMoralis();
 
 	const { superfluidProvider, initialiseSf } = useContext(Web3Context);
 	useEffect(() => {
@@ -61,19 +41,7 @@ const SuperPool = () => {
 				setPoolData(res?.[0]?.attributes);
 			});
 		}
-	}, [poolAddress]);
-
-	const [defaultSelectedToken, setDefaultSelectedToken] = useState();
-
-	const percentagePriceChange = useMemo(() => {
-		const curPrice = Moralis.Units.FromWei(poolData?.adjustedTokenPrice || 0);
-		const prevPrice = Moralis.Units.FromWei(
-			poolData?.prevAdjustedTokenPrice?.price || 0
-		);
-		return (((curPrice - prevPrice) / curPrice) * 100).toFixed(2);
-	}, [Moralis, poolData]);
-
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	}, [getDhedgePool, poolAddress, pools]);
 
 	return (
 		<Page bg>
@@ -86,75 +54,7 @@ const SuperPool = () => {
 			>
 				<PoolDetails poolData={poolData} />
 
-				<VStack
-					w={{ base: '100%', lg: '50%' }}
-					p='4'
-					py='6'
-					h='xl'
-					bg={useColorModeValue('bg.white.50', 'bg.dark.950')}
-					border='1px solid'
-					borderColor={useColorModeValue('gray.200', 'blue.800')}
-					borderRadius='md'
-					maxH='xl'
-				>
-					<HStack w='100%' align='end'>
-						<StatGroup w='100%' px={{ base: '4', md: '10' }} py='6' zIndex='9'>
-							<Stat>
-								<StatLabel color='gray.400'>Balance (DHPTx)</StatLabel>
-
-								<StatNumber fontSize='xl'>$ 345,670</StatNumber>
-								<StatHelpText>$ 2134</StatHelpText>
-							</Stat>
-						</StatGroup>
-						<StatGroup w='100%' px='10' py='6' zIndex='9'>
-							<Stat>
-								<StatLabel color='gray.400'>Token Price</StatLabel>
-								<StatNumber fontSize='xl'>
-									${' '}
-									{numberFormatter(
-										Moralis.Units.FromWei(poolData?.adjustedTokenPrice || '0'),
-										2
-									)}
-								</StatNumber>
-								<StatHelpText>
-									{percentagePriceChange}%
-									<StatArrow
-										type={percentagePriceChange >= 0 ? 'increase' : 'decrease'}
-										ml='4'
-									/>
-								</StatHelpText>
-							</Stat>
-						</StatGroup>
-					</HStack>
-
-					<Divider />
-
-					<Box overflow='auto' w='100%'>
-						<StreamTable poolData={poolData} />
-					</Box>
-
-					<Spacer />
-
-					<HStack>
-						<Button onClick={onOpen} py='4' colorScheme='blue'>
-							New Stream
-						</Button>
-						<Button py='4' colorScheme='blue' variant='ghost'>
-							Withdraw
-						</Button>
-					</HStack>
-					<ModalLayout
-						isOpen={isOpen}
-						onClose={onClose}
-						size='md'
-						header={defaultSelectedToken ? 'Edit Stream' : 'New Stream'}
-					>
-						<CreateStream
-							poolData={poolData}
-							defaultSelectedToken={defaultSelectedToken}
-						/>
-					</ModalLayout>
-				</VStack>
+				<UserPoolData poolData={poolData} />
 			</Stack>
 		</Page>
 	);
