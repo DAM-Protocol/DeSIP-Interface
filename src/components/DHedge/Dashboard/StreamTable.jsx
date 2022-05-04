@@ -18,7 +18,7 @@ import { useMoralis, useWeb3Contract } from 'react-moralis';
 import { dhedgeCoreAbi } from '../../../abi/dhedgeCore';
 import { Web3Context } from '../../../context/Web3Context';
 
-const AssetTable = ({ poolData }) => {
+const StreamTable = ({ poolData }) => {
 	const { account } = useMoralis();
 	const { sf } = useContext(Web3Context);
 	const [streams, setStreams] = useState();
@@ -167,4 +167,4 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 	);
 };
 
-export default AssetTable;
+export default StreamTable;
