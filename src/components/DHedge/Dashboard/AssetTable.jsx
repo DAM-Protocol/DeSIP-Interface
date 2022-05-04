@@ -19,7 +19,7 @@ import { dhedgeCoreAbi } from '../../../abi/dhedgeCore';
 import { Web3Context } from '../../../context/Web3Context';
 
 const AssetTable = ({ poolData }) => {
-	const { account, Moralis } = useMoralis();
+	const { account } = useMoralis();
 	const { sf } = useContext(Web3Context);
 	const [streams, setStreams] = useState();
 
@@ -97,36 +97,23 @@ const AssetTable = ({ poolData }) => {
 const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 	const { Moralis, isWeb3Enabled } = useMoralis();
 
-	const { data, error, runContractFunction, isFetching, isLoading } =
-		useWeb3Contract();
+	const { data, runContractFunction, isLoading } = useWeb3Contract({
+		contractAddress: stream?.receiver,
+		abi: dhedgeCoreAbi,
+		functionName: 'calcUserUninvested',
+		params: {
+			_user: '0x452181dae31cf9f42189df71ec64298993bee6d3',
+			_token: stream?.token.id,
+		},
+	});
 
 	useEffect(() => {
-		console.log(stream?.receiver, stream?.token.id, isWeb3Enabled);
 		(async () => {
 			if (stream && isWeb3Enabled) {
-				const options = {
-					abi: dhedgeCoreAbi,
-					contractAddress: stream?.receiver,
-					functionName: 'calcUserUninvested',
-					params: {
-						_user: '0x452181dae31cf9f42189df71ec64298993bee6d3',
-						_token: stream?.token.id,
-					},
-				};
-
-				// Moralis.executeFunction({
-				// 	abi: dhedgeCoreAbi,
-				// 	contractAddress: stream?.receiver,
-				// 	functionName: 'calcUserUninvested',
-				// 	params: {
-				// 		_user: '0x452181dae31cf9f42189df71ec64298993bee6d3',
-				// 		_token: stream?.token.id,
-				// 	},
-				// }).then((res) => console.log(res));
-				// runContractFunction({ params: options }).then(console.log);
+				runContractFunction().then(console.log);
 			}
 		})();
-	}, [stream, isWeb3Enabled, runContractFunction]);
+	}, [stream, isWeb3Enabled, runContractFunction, Moralis]);
 
 	const fromWei = (number = 0, decimals = 18) => {
 		return Number(Moralis.Units.FromWei(number, decimals));
@@ -163,8 +150,8 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 			</Td>
 
 			<Td textAlign='center'>
-				<Skeleton as={Text} isLoaded={hasLoaded}>
-					{'data' || '---'}
+				<Skeleton as={Text} isLoaded={isLoading}>
+					{data || '---'}
 				</Skeleton>
 			</Td>
 
