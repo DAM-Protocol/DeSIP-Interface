@@ -27,27 +27,27 @@ const DhptStats = ({ poolData }) => {
 		<HStack w='100%' align='end'>
 			<StatGroup w='100%' px={{ base: '4', md: '10' }} py='6' zIndex='9'>
 				<Stat>
-					<StatLabel color='gray.400'>Balance (DHPTx)</StatLabel>
+					<StatLabel color='gray.400'>Balance&nbsp;(DHPTx)</StatLabel>
 
-					<StatNumber fontSize='xl'>$ 345,670</StatNumber>
-					<StatHelpText>$ 2134</StatHelpText>
+					<StatNumber fontSize='xl'>$&nbsp;345,670</StatNumber>
+					<StatHelpText>$&nbsp;2134</StatHelpText>
 				</Stat>
 			</StatGroup>
-			<StatGroup w='100%' px='10' py='6' zIndex='9'>
+
+			<StatGroup w='100%' px={{ base: '4', md: '10' }} py='6' zIndex='9'>
 				<Stat>
 					<StatLabel color='gray.400'>Token Price</StatLabel>
 					<StatNumber fontSize='xl'>
-						${' '}
+						$&nbsp;
 						{numberFormatter(
 							Moralis.Units.FromWei(poolData?.adjustedTokenPrice || '0'),
 							2
 						)}
 					</StatNumber>
 					<StatHelpText>
-						{percentagePriceChange}%
+						{percentagePriceChange}%&nbsp;
 						<StatArrow
 							type={percentagePriceChange >= 0 ? 'increase' : 'decrease'}
-							ml='4'
 						/>
 					</StatHelpText>
 				</Stat>
