@@ -97,7 +97,11 @@ const StreamTable = ({ poolData }) => {
 const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 	const { Moralis, isWeb3Enabled } = useMoralis();
 
-	const { data, runContractFunction, isLoading } = useWeb3Contract({
+	const {
+		data,
+		runContractFunction,
+		isLoading: isUninvestedDataLoading,
+	} = useWeb3Contract({
 		contractAddress: stream?.receiver,
 		abi: dhedgeCoreAbi,
 		functionName: 'calcUserUninvested',
@@ -150,8 +154,9 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 			</Td>
 
 			<Td textAlign='center'>
-				<Skeleton as={Text} isLoaded={isLoading}>
-					{data || '---'}
+				<Skeleton as={Text} isLoaded={isUninvestedDataLoading}>
+					{/* {data || '---'} */}
+					---
 				</Skeleton>
 			</Td>
 

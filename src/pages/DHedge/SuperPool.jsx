@@ -22,7 +22,7 @@ import PoolDetails from '../../components/DHedge/PoolDetails';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Web3Context } from '../../context/Web3Context';
 import { useMoralis, useMoralisQuery } from 'react-moralis';
-import AssetTable from '../../components/DHedge/Dashboard/AssetTable';
+import StreamTable from '../../components/DHedge/Dashboard/StreamTable';
 import CreateStream from '../../components/DHedge/InvestModal/CreateStream';
 import ModalLayout from '../../components/layouts/ModalLayout';
 import numberFormatter from '../../utils/numberFormatter';
@@ -130,7 +130,7 @@ const SuperPool = () => {
 					<Divider />
 
 					<Box overflow='auto' w='100%'>
-						<AssetTable poolData={poolData} />
+						<StreamTable poolData={poolData} />
 					</Box>
 
 					<Spacer />
