@@ -11,6 +11,7 @@ import {
 	Text,
 	useColorModeValue,
 	Skeleton,
+	Flex,
 } from '@chakra-ui/react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
@@ -54,47 +55,50 @@ const StreamTable = ({ poolData }) => {
 		} else return {};
 	}, [poolData]);
 
+	const headBg = useColorModeValue('bg.white.50', 'bg.dark.950');
+
 	return (
-		<Table size='sm' variant='unstyled'>
-			<Thead
-				position='sticky'
-				top='0'
-				bg={useColorModeValue('bg.white.50', 'bg.dark.950')}
-				zIndex='9'
-			>
-				<Tr>
-					<Th textAlign='center'>Asset</Th>
-					<Th textAlign='center'>
-						Rate{' '}
-						<Text as='sub' opacity='0.7'>
-							(/month)
-						</Text>{' '}
-					</Th>
-					<Th textAlign='center'>Streamed</Th>
-					<Th textAlign='center'>Uninvested</Th>
-					<Th textAlign='center'>Controls</Th>
-				</Tr>
-			</Thead>
-			<Tbody>
-				{streams?.length ? (
-					streams.map((stream) => {
-						return (
-							<StreamRow
-								key={stream.id}
-								hasLoaded
-								stream={stream}
-								depositSuperTokens={depositSuperTokens}
-							/>
-						);
-					})
-				) : (
-					<>
-						<StreamRow />
-						<StreamRow />
-					</>
-				)}
-			</Tbody>
-		</Table>
+		<>
+			{streams?.length ? (
+				<Table size='sm' variant='unstyled'>
+					<Thead position='sticky' top='0' bg={headBg} zIndex='9'>
+						<Tr>
+							<Th textAlign='center'>Asset</Th>
+							<Th textAlign='center'>
+								Rate{' '}
+								<Text as='sub' opacity='0.7'>
+									(/month)
+								</Text>{' '}
+							</Th>
+							<Th textAlign='center'>Streamed</Th>
+							<Th textAlign='center'>Uninvested</Th>
+							<Th textAlign='center'>Controls</Th>
+						</Tr>
+					</Thead>
+					<Tbody>
+						{streams?.length ? (
+							streams.map((stream) => {
+								return (
+									<StreamRow
+										key={stream.id}
+										hasLoaded
+										stream={stream}
+										depositSuperTokens={depositSuperTokens}
+									/>
+								);
+							})
+						) : (
+							<>
+								<StreamRow />
+								<StreamRow />
+							</>
+						)}
+					</Tbody>
+				</Table>
+			) : (
+				<Flex justify='center'>No Active Streams</Flex>
+			)}
+		</>
 	);
 };
 
