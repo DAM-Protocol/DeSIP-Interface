@@ -33,7 +33,7 @@ const DhptStats = ({ poolData }) => {
 			const dhptx = await sf.loadSuperToken(poolData?.poolSuperToken);
 			await dhptx
 				.balanceOf({
-					account: '0x452181dae31cf9f42189df71ec64298993bee6d3',
+					account: account,
 					providerOrSigner: sfProvider,
 				})
 				.then((balance) => setBalance(Moralis.Units.FromWei(balance)));

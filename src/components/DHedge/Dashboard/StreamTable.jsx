@@ -27,8 +27,7 @@ const StreamTable = ({ poolData }) => {
 		if (sf && poolData) {
 			sf.query
 				.listStreams({
-					// sender: account,
-					sender: '0x452181dae31cf9f42189df71ec64298993bee6d3',
+					sender: account,
 					receiver: poolData.superPoolAddress,
 				})
 				.then((res) => {
@@ -77,7 +76,7 @@ const StreamTable = ({ poolData }) => {
 				</Tr>
 			</Thead>
 			<Tbody>
-				{streams?.length &&
+				{streams?.length ? (
 					streams.map((stream) => {
 						return (
 							<StreamRow
@@ -87,8 +86,13 @@ const StreamTable = ({ poolData }) => {
 								depositSuperTokens={depositSuperTokens}
 							/>
 						);
-					})}
-				{!streams?.length && <StreamRow />}
+					})
+				) : (
+					<>
+						<StreamRow />
+						<StreamRow />
+					</>
+				)}
 			</Tbody>
 		</Table>
 	);
@@ -106,7 +110,7 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 		abi: dhedgeCoreAbi,
 		functionName: 'calcUserUninvested',
 		params: {
-			_user: '0x452181dae31cf9f42189df71ec64298993bee6d3',
+			_user: stream?.sender,
 			_token: stream?.token.id,
 		},
 	});
