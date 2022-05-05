@@ -1,15 +1,12 @@
 import {
 	useColorModeValue,
-	Grid,
 	VStack,
 	Image,
 	Stack,
-	Button,
 	Box,
 	Divider,
 	StatGroup,
 	Stat,
-	StatLabel,
 	StatNumber,
 	StatHelpText,
 	Flex,
@@ -19,6 +16,7 @@ import { InternalLink } from '../../Links';
 import DhptStats from '../DhptStats';
 import StreamTable from './StreamTable';
 import { NavLink, ExternalLink } from '../../sections/Navbar/Links';
+import getRelativeTime from '../../../utils/getRelativeTime';
 
 const PoolTableItem = ({ poolData }) => {
 	const border = {
@@ -76,7 +74,7 @@ const PoolTableItem = ({ poolData }) => {
 								</NavLink>
 								<ExternalLink
 									fontSize='sm'
-									to={`/Super-dHEDGE/${poolData?.superPoolAddress}`}
+									href={`https://app.dhedge.org/pool/${poolData?.dhedgeFundAddress}`}
 								>
 									dHEDGE Fund
 								</ExternalLink>
@@ -91,7 +89,9 @@ const PoolTableItem = ({ poolData }) => {
 
 					<StatGroup px={{ base: '4', md: '10' }} py='6' zIndex='9' minW='20ch'>
 						<Stat>
-							<StatNumber fontSize='xl'>1hr ago</StatNumber>
+							<StatNumber fontSize='xl'>
+								{getRelativeTime(poolData?.lastDeposit)}
+							</StatNumber>
 							<StatHelpText>Last Deposited</StatHelpText>
 						</Stat>
 					</StatGroup>
