@@ -1,7 +1,5 @@
 import { useMoralis } from 'react-moralis';
-import makeBlockie from 'ethereum-blockies-base64';
 import {
-	Avatar,
 	Button,
 	Menu,
 	MenuButton,
@@ -21,10 +19,13 @@ import {
 	ModalBody,
 	Image,
 	Flex,
+	Box,
+	IconButton,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { connectors } from './connectorConfig';
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 
 const UserMenu = () => {
 	const { isOpen: isWalletSelectorOpen, onToggle: toggleWalletSelector } =
@@ -44,22 +45,27 @@ const UserMenu = () => {
 			{user ? (
 				<Menu>
 					<MenuButton
-						as={Button}
+						as={IconButton}
 						rounded={'full'}
 						variant={'link'}
 						cursor={'pointer'}
 						minW={0}
-					>
-						<Avatar
-							size={'sm'}
-							src={makeBlockie(user?.get('ethAddress') || '0x')}
-						/>
-					</MenuButton>
+						display='flex'
+						alignItems='center'
+						icon={
+							<Jazzicon
+								diameter={32}
+								seed={jsNumberForAddress(user?.get('ethAddress') || '0x')}
+							/>
+						}
+					></MenuButton>
 					<MenuList alignItems={'center'} boxShadow={'lg'}>
 						<Center>
-							<Avatar
-								size={'xl'}
-								src={makeBlockie(user?.get('ethAddress') || '0x')}
+							<Box
+								as={Jazzicon}
+								boxSize='20'
+								diameter={80}
+								seed={jsNumberForAddress(user?.get('ethAddress') || '0x')}
 							/>
 						</Center>
 						<Center>
