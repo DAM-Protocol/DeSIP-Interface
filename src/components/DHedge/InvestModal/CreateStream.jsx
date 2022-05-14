@@ -19,10 +19,13 @@ import TokenSelector from './TokenSelector';
 
 const CreateStream = ({ poolData, defaultSelectedToken }) => {
 	const { isWeb3Enabled } = useMoralis();
-	const { superfluidProvider, initialiseSf } = useContext(Web3Context);
+	const { sfProvider, initialiseSf } = useContext(Web3Context);
 	useEffect(() => {
-		if (!superfluidProvider && isWeb3Enabled) initialiseSf();
-	}, [isWeb3Enabled, initialiseSf, superfluidProvider]);
+		if (!sfProvider && isWeb3Enabled) {
+			initialiseSf();
+			console.log('initialiseSf');
+		}
+	}, [isWeb3Enabled, initialiseSf, sfProvider]);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 

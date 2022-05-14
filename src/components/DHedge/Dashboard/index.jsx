@@ -6,13 +6,13 @@ import { Web3Context } from '../../../context/Web3Context';
 import PoolTableItem from './PoolTableItem';
 
 const DHedgeDashboard = () => {
-	const { pools, getDhedgePools, superfluidProvider, initialiseSf } =
+	const { pools, getDhedgePools, sfProvider, initialiseSf } =
 		useContext(Web3Context);
 
 	const { isWeb3Enabled } = useMoralis();
 	useEffect(() => {
-		if (!superfluidProvider && isWeb3Enabled) initialiseSf();
-	}, [isWeb3Enabled, initialiseSf, superfluidProvider]);
+		if (!sfProvider && isWeb3Enabled) initialiseSf();
+	}, [isWeb3Enabled, initialiseSf, sfProvider]);
 
 	useEffect(() => {
 		if (getDhedgePools) getDhedgePools();
