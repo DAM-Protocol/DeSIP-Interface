@@ -7,7 +7,7 @@ const InternalLink = forwardRef(({ children, to, ...rest }, ref) => (
 	</Link>
 ));
 const ExternalLink = forwardRef(({ children, href, ...rest }, ref) => (
-	<Link href={href} isExternal {...rest}>
+	<Link href={href} isExternal {...rest} ref={ref}>
 		{children}
 	</Link>
 ));
