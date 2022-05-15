@@ -33,7 +33,8 @@ const StreamTable = ({ poolData }) => {
 				})
 				.then((res) => {
 					setStreams(res?.data);
-				});
+				})
+				.catch((e) => console.log('fetch streams failed', e));
 		}
 	}, [sf, poolData]);
 
@@ -109,21 +110,20 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 		data,
 		runContractFunction,
 		isLoading: isUninvestedDataLoading,
+		isFetching: isUninvestedFetching,
 	} = useWeb3Contract({
 		contractAddress: stream?.receiver,
 		abi: dhedgeCoreAbi,
 		functionName: 'calcUserUninvested',
 		params: {
 			_user: stream?.sender,
-			_token: stream?.token.id,
+			_token: stream?.token.underlyingAddress,
 		},
 	});
 
 	useEffect(() => {
 		(async () => {
-			if (stream && isWeb3Enabled) {
-				runContractFunction().then(console.log);
-			}
+			if (stream && isWeb3Enabled) runContractFunction();
 		})();
 	}, [stream, isWeb3Enabled, runContractFunction, Moralis]);
 
@@ -162,9 +162,11 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 			</Td>
 
 			<Td textAlign='center'>
-				<Skeleton as={Text} isLoaded={isUninvestedDataLoading}>
-					{/* {data || '---'} */}
-					---
+				<Skeleton
+					as={Text}
+					isLoaded={!isUninvestedDataLoading && !isUninvestedFetching}
+				>
+					{fromWei(data?.toString()).toFixed(2) || '---'}
 				</Skeleton>
 			</Td>
 
