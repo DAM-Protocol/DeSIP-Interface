@@ -9,28 +9,29 @@ import {
 } from '@chakra-ui/react';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useMoralis } from 'react-moralis';
-
 import { Web3Context } from '../../context/Web3Context';
 import numberFormatter from '../../utils/numberFormatter';
 
 /* DHPT Balance and Token Price Data */
-const DhptStats = ({ poolData }) => {
+const DhptStats = ({
+	adjustedTokenPrice,
+	poolSuperToken,
+	prevAdjustedTokenPrice,
+}) => {
 	const { Moralis, account } = useMoralis();
 	const { sf, sfProvider } = useContext(Web3Context);
 
 	const percentagePriceChange = useMemo(() => {
-		const curPrice = Moralis.Units.FromWei(poolData?.adjustedTokenPrice || 0);
-		const prevPrice = Moralis.Units.FromWei(
-			poolData?.prevAdjustedTokenPrice?.price || 0
-		);
+		const curPrice = Moralis.Units.FromWei(adjustedTokenPrice || 0);
+		const prevPrice = Moralis.Units.FromWei(prevAdjustedTokenPrice?.price || 0);
 		return (((curPrice - prevPrice) / curPrice) * 100).toFixed(2);
-	}, [Moralis, poolData]);
+	}, [Moralis, adjustedTokenPrice, prevAdjustedTokenPrice?.price]);
 
 	const [balance, setBalance] = useState();
 
 	const calcDhptxBalance = useCallback(async () => {
-		if (sf && account && poolData) {
-			const dhptx = await sf.loadSuperToken(poolData?.poolSuperToken);
+		if (sf && account && poolSuperToken) {
+			const dhptx = await sf.loadSuperToken(poolSuperToken);
 			await dhptx
 				.balanceOf({
 					account: account,
@@ -38,10 +39,10 @@ const DhptStats = ({ poolData }) => {
 				})
 				.then((balance) => setBalance(Moralis.Units.FromWei(balance)));
 		}
-	}, [Moralis, account, poolData, sf, sfProvider]);
+	}, [Moralis, account, poolSuperToken, sf, sfProvider]);
 	useEffect(() => {
 		calcDhptxBalance();
-	}, [calcDhptxBalance, poolData]);
+	}, [calcDhptxBalance]);
 
 	return (
 		<HStack w='100%' align='end'>
@@ -55,8 +56,7 @@ const DhptStats = ({ poolData }) => {
 					<StatHelpText>
 						$&nbsp;
 						{numberFormatter(
-							Moralis.Units.FromWei(poolData?.adjustedTokenPrice || '0') *
-								balance
+							Moralis.Units.FromWei(adjustedTokenPrice || '0') * balance
 						)}
 					</StatHelpText>
 				</Stat>
@@ -68,7 +68,7 @@ const DhptStats = ({ poolData }) => {
 					<StatNumber fontSize='xl'>
 						$&nbsp;
 						{numberFormatter(
-							Moralis.Units.FromWei(poolData?.adjustedTokenPrice || '0'),
+							Moralis.Units.FromWei(adjustedTokenPrice || '0'),
 							2
 						)}
 					</StatNumber>

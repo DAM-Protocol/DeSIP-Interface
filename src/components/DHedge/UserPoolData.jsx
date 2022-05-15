@@ -32,7 +32,11 @@ const UserPoolData = ({ poolData }) => {
 			borderRadius='md'
 			maxH='xl'
 		>
-			<DhptStats poolData={poolData} />
+			<DhptStats
+				adjustedTokenPrice={poolData?.adjustedTokenPrice}
+				poolSuperToken={poolData?.superToken}
+				prevAdjustedTokenPrice={poolData?.prevAdjustedTokenPrice}
+			/>
 
 			<Divider />
 
