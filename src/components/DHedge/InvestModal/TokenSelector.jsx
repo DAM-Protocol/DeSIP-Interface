@@ -44,6 +44,7 @@ const TokenSelector = ({
 						{depositSuperTokens?.map((token) => (
 							<TokenItem
 								key={token.address}
+								address={token.address}
 								icon={assetLookup?.[token.address]?.imageURL}
 								name={assetLookup?.[token.address]?.name}
 								symbol={assetLookup?.[token.address]?.name}

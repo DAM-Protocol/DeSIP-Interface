@@ -1,12 +1,18 @@
 import { Button, Flex, Image, Spacer, Badge } from '@chakra-ui/react';
 import React from 'react';
 
-const TokenItem = ({ icon, symbol, superTokenAddress, handleSelect }) => {
+const TokenItem = ({
+	address,
+	icon,
+	symbol,
+	superTokenAddress,
+	handleSelect,
+}) => {
 	return (
 		<Flex
 			as={Button}
 			variant='ghost'
-			onClick={() => handleSelect({ symbol, superTokenAddress, icon })}
+			onClick={() => handleSelect({ address, symbol, superTokenAddress, icon })}
 			justify='space-between'
 			width={'100%'}
 		>

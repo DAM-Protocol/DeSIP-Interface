@@ -17,9 +17,10 @@ import { useMoralis } from 'react-moralis';
 import { Web3Context } from '../../../context/Web3Context';
 import TokenSelector from './TokenSelector';
 
-const CreateStream = ({ poolData, defaultSelectedToken }) => {
+const CreateStream = ({ poolData }) => {
 	const { isWeb3Enabled } = useMoralis();
-	const { sfProvider, initialiseSf } = useContext(Web3Context);
+	const { sfProvider, initialiseSf, assetLookup } = useContext(Web3Context);
+
 	useEffect(() => {
 		if (!sfProvider && isWeb3Enabled) {
 			initialiseSf();
@@ -50,9 +51,19 @@ const CreateStream = ({ poolData, defaultSelectedToken }) => {
 		} else return [];
 	}, [poolData]);
 
-	const [selectedToken, setSelectedToken] = useState(
-		depositSuperTokens.find((token) => token === defaultSelectedToken)
-	);
+	const [selectedToken, setSelectedToken] = useState();
+	useEffect(() => {
+		if (!selectedToken && depositSuperTokens && assetLookup) {
+			const defaultToken = depositSuperTokens[0];
+			setSelectedToken({
+				...defaultToken,
+				name: assetLookup?.[defaultToken.address]?.name,
+				symbol: assetLookup?.[defaultToken.address]?.name,
+				icon: assetLookup?.[defaultToken.address]?.imageURL,
+			});
+		}
+	}, [depositSuperTokens, selectedToken, assetLookup]);
+
 	const handleSelect = (token) => {
 		setSelectedToken(token);
 		onClose();
@@ -109,7 +120,9 @@ const CreateStream = ({ poolData, defaultSelectedToken }) => {
 			</FormControl>
 
 			<FormControl aria-autocomplete='none'>
-				<label htmlFor='rate'> Rate (Tokens/month)</label>
+				<label htmlFor='rate'>
+					Rate ({(selectedToken?.symbol || '') + 'x' || 'Tokens'}/month)
+				</label>
 				<Input
 					min={0}
 					autoComplete='new-password'
