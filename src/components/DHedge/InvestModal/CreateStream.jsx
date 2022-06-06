@@ -12,14 +12,15 @@ import {
 	InputLeftElement,
 	Image,
 } from '@chakra-ui/react';
+import { SuperToken } from '@superfluid-finance/sdk-core';
 import { useState, useRef, useMemo, useEffect, useContext } from 'react';
 import { useMoralis } from 'react-moralis';
 import { Web3Context } from '../../../context/Web3Context';
 import TokenSelector from './TokenSelector';
 
 const CreateStream = ({ poolData }) => {
-	const { isWeb3Enabled } = useMoralis();
-	const { sfProvider, initialiseSf, assetLookup } = useContext(Web3Context);
+	const { account, isWeb3Enabled } = useMoralis();
+	const { sfProvider, sf, initialiseSf, assetLookup } = useContext(Web3Context);
 
 	useEffect(() => {
 		if (!sfProvider && isWeb3Enabled) {
@@ -52,8 +53,10 @@ const CreateStream = ({ poolData }) => {
 	}, [poolData]);
 
 	const [selectedToken, setSelectedToken] = useState();
+	const [streamRate, setStreamRate] = useState(0);
+
 	useEffect(() => {
-		if (!selectedToken && depositSuperTokens && assetLookup) {
+		if (!selectedToken && depositSuperTokens?.[0] && assetLookup) {
 			const defaultToken = depositSuperTokens[0];
 			setSelectedToken({
 				...defaultToken,
@@ -63,6 +66,25 @@ const CreateStream = ({ poolData }) => {
 			});
 		}
 	}, [depositSuperTokens, selectedToken, assetLookup]);
+	useEffect(() => {
+		if (sf && selectedToken && !selectedToken?.superToken) {
+			const { superTokenAddress } = selectedToken;
+
+			sf.loadSuperToken(superTokenAddress).then(async (superToken) => {
+				setSelectedToken({ ...selectedToken, superToken });
+			});
+		}
+	}, [poolData, selectedToken, sf, sfProvider, account]);
+	useEffect(() => {
+		if (poolData && selectedToken?.superToken)
+			selectedToken?.superToken
+				.getFlow({
+					sender: poolData.superPoolAddress,
+					receiver: account,
+					providerOrSigner: sfProvider,
+				})
+				.then(({ flowRate }) => setStreamRate(flowRate));
+	}, [account, poolData, selectedToken, sfProvider]);
 
 	const handleSelect = (token) => {
 		setSelectedToken(token);
@@ -125,6 +147,8 @@ const CreateStream = ({ poolData }) => {
 				</label>
 				<Input
 					min={0}
+					value={streamRate}
+					onChange={setStreamRate}
 					autoComplete='new-password'
 					type='number'
 					id='rate'

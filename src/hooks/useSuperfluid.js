@@ -34,7 +34,7 @@ const useSuperfluid = () => {
 				}
 			);
 		}
-	}, [sfProvider, sfSigner, isWeb3Enabled, Moralis]);
+	}, [sfProvider, sfSigner, sf, isWeb3Enabled, Moralis]);
 
 	return { sfProvider, sf, initialiseSf, sfSigner };
 };
