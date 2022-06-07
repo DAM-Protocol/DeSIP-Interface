@@ -1,7 +1,7 @@
 import { Box, Stack, useColorModeValue } from '@chakra-ui/react';
 
 const Page = (props) => {
-	const bg = useColorModeValue('bg.gray.100', 'bg.dark.900');
+	const bg = useColorModeValue('bg.gray.100', 'bg.dark.950');
 
 	return (
 		<Box
@@ -9,7 +9,8 @@ const Page = (props) => {
 			backgroundColor={props.bg && bg}
 			transition={'background-color 0.2s ease-in-out'}
 			w='100%'
-			className='Page'>
+			className='Page'
+		>
 			<Stack
 				m='auto'
 				maxW={{ xl: '1300px' }}
@@ -19,7 +20,8 @@ const Page = (props) => {
 				justify={['center', 'flex-start']}
 				py='3rem'
 				px='1.5rem'
-				{...props}>
+				{...props}
+			>
 				{props.children}
 			</Stack>
 		</Box>
