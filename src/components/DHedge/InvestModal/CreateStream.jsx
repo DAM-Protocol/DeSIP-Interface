@@ -12,7 +12,6 @@ import {
 	InputLeftElement,
 	Image,
 } from '@chakra-ui/react';
-import { SuperToken } from '@superfluid-finance/sdk-core';
 import { useState, useRef, useMemo, useEffect, useContext } from 'react';
 import { useMoralis } from 'react-moralis';
 import { Web3Context } from '../../../context/Web3Context';
@@ -20,7 +19,7 @@ import TokenSelector from './TokenSelector';
 
 const CreateStream = ({ poolData }) => {
 	const { account, isWeb3Enabled } = useMoralis();
-	const { sfProvider, sf, initialiseSf, assetLookup } = useContext(Web3Context);
+	const { sfProvider, sf, initialiseSf } = useContext(Web3Context);
 
 	useEffect(() => {
 		if (!sfProvider && isWeb3Enabled) {
@@ -29,7 +28,75 @@ const CreateStream = ({ poolData }) => {
 		}
 	}, [isWeb3Enabled, initialiseSf, sfProvider]);
 
+	const [selectedToken, setSelectedToken] = useState();
+	const [streamRate, setStreamRate] = useState(0);
+
+	useEffect(() => {
+		if (sf && selectedToken && !selectedToken?.superToken) {
+			const { superTokenAddress } = selectedToken;
+
+			sf.loadSuperToken(superTokenAddress).then(async (superToken) => {
+				setSelectedToken({ ...selectedToken, superToken });
+			});
+		}
+	}, [poolData, selectedToken, sf, sfProvider, account]);
+	useEffect(() => {
+		if (poolData && selectedToken?.superToken)
+			selectedToken?.superToken
+				.getFlow({
+					sender: poolData.superPoolAddress,
+					receiver: account,
+					providerOrSigner: sfProvider,
+				})
+				.then(({ flowRate }) => setStreamRate(flowRate));
+	}, [account, poolData, selectedToken, sfProvider]);
+
+	const rateInputRef = useRef();
+
+	return (
+		<VStack gap='6' w='100%' px='4' borderRadius={'md'}>
+			<Alert
+				status='warning'
+				borderRadius='md'
+				bg={useColorModeValue('yellow.50', 'yellow.900')}
+			>
+				<AlertIcon />
+				Do your own research about the pools before streaming.
+			</Alert>
+
+			<SuperTokenSelector
+				poolData={poolData}
+				rateInputRef={rateInputRef}
+				selectedToken={selectedToken}
+				setSelectedToken={setSelectedToken}
+			/>
+			<RateInput
+				selectedToken={selectedToken}
+				streamRate={streamRate}
+				setStreamRate={setStreamRate}
+				rateInputRef={rateInputRef}
+			/>
+
+			<Spacer />
+
+			<Button colorScheme={'blue'}>Start Stream</Button>
+		</VStack>
+	);
+};
+
+const SuperTokenSelector = ({
+	poolData,
+	rateInputRef,
+	selectedToken,
+	setSelectedToken,
+}) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const handleSelect = (token) => {
+		setSelectedToken(token);
+		onClose();
+	};
+
+	const { assetLookup } = useContext(Web3Context);
 
 	const depositSuperTokens = useMemo(() => {
 		// array of erc20 token addresses
@@ -52,9 +119,6 @@ const CreateStream = ({ poolData }) => {
 		} else return [];
 	}, [poolData]);
 
-	const [selectedToken, setSelectedToken] = useState();
-	const [streamRate, setStreamRate] = useState(0);
-
 	useEffect(() => {
 		if (!selectedToken && depositSuperTokens?.[0] && assetLookup) {
 			const defaultToken = depositSuperTokens[0];
@@ -66,43 +130,9 @@ const CreateStream = ({ poolData }) => {
 			});
 		}
 	}, [depositSuperTokens, selectedToken, assetLookup]);
-	useEffect(() => {
-		if (sf && selectedToken && !selectedToken?.superToken) {
-			const { superTokenAddress } = selectedToken;
 
-			sf.loadSuperToken(superTokenAddress).then(async (superToken) => {
-				setSelectedToken({ ...selectedToken, superToken });
-			});
-		}
-	}, [poolData, selectedToken, sf, sfProvider, account]);
-	useEffect(() => {
-		if (poolData && selectedToken?.superToken)
-			selectedToken?.superToken
-				.getFlow({
-					sender: poolData.superPoolAddress,
-					receiver: account,
-					providerOrSigner: sfProvider,
-				})
-				.then(({ flowRate }) => setStreamRate(flowRate));
-	}, [account, poolData, selectedToken, sfProvider]);
-
-	const handleSelect = (token) => {
-		setSelectedToken(token);
-		onClose();
-	};
-
-	const rateInputRef = useRef();
 	return (
-		<VStack gap='6' w='100%' px='4' borderRadius={'md'}>
-			<Alert
-				status='warning'
-				borderRadius='md'
-				bg={useColorModeValue('yellow.50', 'yellow.900')}
-			>
-				<AlertIcon />
-				Do your own research about the pools before streaming.
-			</Alert>
-
+		<>
 			<TokenSelector
 				isOpen={isOpen}
 				onClose={onClose}
@@ -140,26 +170,31 @@ const CreateStream = ({ poolData }) => {
 					/>
 				</InputGroup>
 			</FormControl>
+		</>
+	);
+};
 
-			<FormControl aria-autocomplete='none'>
-				<label htmlFor='rate'>
-					Rate ({(selectedToken?.symbol || '') + 'x' || 'Tokens'}/month)
-				</label>
-				<Input
-					min={0}
-					value={streamRate}
-					onChange={setStreamRate}
-					autoComplete='new-password'
-					type='number'
-					id='rate'
-					ref={rateInputRef}
-				/>
-			</FormControl>
-
-			<Spacer />
-
-			<Button colorScheme={'blue'}>Start Stream</Button>
-		</VStack>
+const RateInput = ({
+	selectedToken,
+	streamRate,
+	setStreamRate,
+	rateInputRef,
+}) => {
+	return (
+		<FormControl aria-autocomplete='none'>
+			<label htmlFor='rate'>
+				Rate ({(selectedToken?.symbol || '') + 'x' || 'Tokens'}/month)
+			</label>
+			<Input
+				min={0}
+				value={streamRate}
+				onChange={(e) => setStreamRate(e.target.value)}
+				autoComplete='new-password'
+				type='number'
+				id='rate'
+				ref={rateInputRef}
+			/>
+		</FormControl>
 	);
 };
 
