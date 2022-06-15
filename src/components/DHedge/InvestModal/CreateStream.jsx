@@ -1,21 +1,19 @@
 import {
 	Alert,
 	AlertIcon,
-	FormControl,
-	Input,
 	Spacer,
 	VStack,
-	useDisclosure,
 	useColorModeValue,
 	Button,
-	InputGroup,
-	InputLeftElement,
-	Image,
+	useInterval,
 } from '@chakra-ui/react';
-import { useState, useRef, useMemo, useEffect, useContext } from 'react';
-import { useMoralis } from 'react-moralis';
+import { useState, useRef, useEffect, useContext, useMemo } from 'react';
+import { useMoralis, useWeb3ExecuteFunction } from 'react-moralis';
+import { dhedgeCoreAbi } from '../../../abi/dhedgeCore';
 import { Web3Context } from '../../../context/Web3Context';
-import TokenSelector from './TokenSelector';
+import BufferDisplay from './BufferDisplay';
+import RateInput from './RateInput';
+import SuperTokenSelector from './SuperTokenSelector';
 
 const CreateStream = ({ poolData }) => {
 	const { account, isWeb3Enabled } = useMoralis();
@@ -30,6 +28,7 @@ const CreateStream = ({ poolData }) => {
 
 	const [selectedToken, setSelectedToken] = useState();
 	const [streamRate, setStreamRate] = useState(0);
+	const [existingStreamRate, setExistingStreamRate] = useState(0);
 
 	useEffect(() => {
 		if (sf && selectedToken && !selectedToken?.superToken) {
@@ -48,10 +47,51 @@ const CreateStream = ({ poolData }) => {
 					receiver: account,
 					providerOrSigner: sfProvider,
 				})
-				.then(({ flowRate }) => setStreamRate(flowRate));
+				.then(({ flowRate }) => {
+					setExistingStreamRate(flowRate);
+					setStreamRate(flowRate);
+				});
 	}, [account, poolData, selectedToken, sfProvider]);
 
 	const rateInputRef = useRef();
+
+	// const bufferCalcParams = useMemo(
+	// 	() => ({
+	// 		_user: account,
+	// 		_superToken: selectedToken?.superTokenAddress,
+	// 		_streamAction: 'create',
+	// 		_delay: 60 * 10,
+	// 		_flowRate: streamRate,
+	// 	}),
+	// 	[account, selectedToken?.superTokenAddress, streamRate]
+	// );
+
+	const {
+		data: bufferAmount,
+		fetch: calcBufferTransferAmount,
+		isLoading,
+	} = useWeb3ExecuteFunction(
+		{
+			functionName: 'calcBufferTransferAmount',
+			abi: dhedgeCoreAbi,
+			contractAddress: poolData?.superPoolAddress,
+			params: {
+				_user: account,
+				_superToken: selectedToken?.superTokenAddress,
+				_streamAction: 'create',
+				_delay: 60 * 10, //in seconds
+				_flowRate: streamRate,
+			},
+		},
+		{
+			autoFetch: true,
+		},
+		[poolData, account, selectedToken, streamRate]
+	);
+	useInterval(() => {
+		console.log('calcBufferTransferAmount');
+		calcBufferTransferAmount({ onComplete: () => console.log('completed') });
+	}, 60 * 1000);
 
 	return (
 		<VStack gap='6' w='100%' px='4' borderRadius={'md'}>
@@ -77,124 +117,17 @@ const CreateStream = ({ poolData }) => {
 				rateInputRef={rateInputRef}
 			/>
 
+			<BufferDisplay
+				selectedToken={selectedToken}
+				bufferAmount={bufferAmount}
+			/>
+
 			<Spacer />
 
-			<Button colorScheme={'blue'}>Start Stream</Button>
+			<Button colorScheme={'blue'} disabled={existingStreamRate === streamRate}>
+				Start Stream
+			</Button>
 		</VStack>
-	);
-};
-
-const SuperTokenSelector = ({
-	poolData,
-	rateInputRef,
-	selectedToken,
-	setSelectedToken,
-}) => {
-	const { isOpen, onOpen, onClose } = useDisclosure();
-	const handleSelect = (token) => {
-		setSelectedToken(token);
-		onClose();
-	};
-
-	const { assetLookup } = useContext(Web3Context);
-
-	const depositSuperTokens = useMemo(() => {
-		// array of erc20 token addresses
-		const supportedDepositTokens = poolData?.supportedDepositTokens;
-
-		// object with erc20 address key and supertoken address value
-		const supportedSuperTokens = poolData?.supportedSuperTokens;
-
-		if (supportedDepositTokens && supportedSuperTokens) {
-			// return common supertokens
-			return supportedDepositTokens.reduce((acc, curr) => {
-				if (supportedSuperTokens[curr]) {
-					acc.push({
-						address: curr,
-						superTokenAddress: supportedSuperTokens[curr],
-					});
-				}
-				return acc;
-			}, []);
-		} else return [];
-	}, [poolData]);
-
-	useEffect(() => {
-		if (!selectedToken && depositSuperTokens?.[0] && assetLookup) {
-			const defaultToken = depositSuperTokens[0];
-			setSelectedToken({
-				...defaultToken,
-				name: assetLookup?.[defaultToken.address]?.name,
-				symbol: assetLookup?.[defaultToken.address]?.name,
-				icon: assetLookup?.[defaultToken.address]?.imageURL,
-			});
-		}
-	}, [depositSuperTokens, selectedToken, assetLookup]);
-
-	return (
-		<>
-			<TokenSelector
-				isOpen={isOpen}
-				onClose={onClose}
-				handleSelect={handleSelect}
-				depositSuperTokens={depositSuperTokens}
-				finalFocusRef={rateInputRef}
-			/>
-
-			<FormControl>
-				<label htmlFor='supertoken'>Super Token</label>
-				<InputGroup>
-					<InputLeftElement pointerEvents='none' mr='6'>
-						<Image
-							boxSize={'1.25rem'}
-							borderRadius='50%'
-							alt='token'
-							src={selectedToken?.icon}
-							fallbackSrc='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-circle-outline-512.png'
-						/>
-					</InputLeftElement>
-
-					<Input
-						type='text'
-						id='supertoken'
-						autoComplete='off'
-						onClick={onOpen}
-						onKeyUp={(e) => {
-							if (e.key === 'Enter') e.target.blur();
-							if (e.key !== 'Tab' && e.key !== 'Shift' && e.key !== 'Escape')
-								onOpen();
-						}}
-						cursor='pointer'
-						onChange={() => {}}
-						value={selectedToken ? selectedToken?.symbol + 'x' : ''}
-					/>
-				</InputGroup>
-			</FormControl>
-		</>
-	);
-};
-
-const RateInput = ({
-	selectedToken,
-	streamRate,
-	setStreamRate,
-	rateInputRef,
-}) => {
-	return (
-		<FormControl aria-autocomplete='none'>
-			<label htmlFor='rate'>
-				Rate ({(selectedToken?.symbol || '') + 'x' || 'Tokens'}/month)
-			</label>
-			<Input
-				min={0}
-				value={streamRate}
-				onChange={(e) => setStreamRate(e.target.value)}
-				autoComplete='new-password'
-				type='number'
-				id='rate'
-				ref={rateInputRef}
-			/>
-		</FormControl>
 	);
 };
 
