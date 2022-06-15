@@ -19,7 +19,9 @@ const Web3Context = createContext({
 });
 
 const Web3ContextProvider = ({ children }) => {
-	const { sfProvider, sf, initialiseSf, sfSigner } = useSuperfluid();
+	const { sfProvider, sf, initialiseSf, sfSigner } = useSuperfluid({
+		supportedChains: ['0x89'],
+	});
 
 	// Moralis Queries
 	const {

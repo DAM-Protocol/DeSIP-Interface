@@ -1,17 +1,20 @@
 import { useState, useCallback } from 'react';
 import { useMoralis } from 'react-moralis';
 
-const useSuperfluid = () => {
-	const { Moralis, isWeb3Enabled } = useMoralis();
+const useSuperfluid = ({ supportedChains }) => {
+	const { Moralis, isWeb3Enabled, chainId } = useMoralis();
 
 	const [sf, setSf] = useState(null);
 	const [sfProvider, setSfProvider] = useState(null);
 	const [sfSigner, setSfSigner] = useState(null);
 
 	const initialiseSf = useCallback(async () => {
+		if (!supportedChains.includes(chainId)) {
+			throw new Error(`Chain ${chainId} is not supported`);
+		}
 		if (!sfProvider && !sfSigner && !sf) {
 			console.log('Intitialising Superfluid');
-			import('@superfluid-finance/sdk-core/dist/main/Framework').then(
+			await import('@superfluid-finance/sdk-core/dist/main/Framework').then(
 				async ({ default: Framework }) => {
 					if (!isWeb3Enabled && !Moralis) return null;
 					const ethers = Moralis.web3Library;
@@ -34,7 +37,15 @@ const useSuperfluid = () => {
 				}
 			);
 		}
-	}, [sfProvider, sfSigner, sf, isWeb3Enabled, Moralis]);
+	}, [
+		supportedChains,
+		chainId,
+		sfProvider,
+		sfSigner,
+		sf,
+		isWeb3Enabled,
+		Moralis,
+	]);
 
 	return { sfProvider, sf, initialiseSf, sfSigner };
 };
