@@ -1,14 +1,12 @@
-import { Suspense } from 'react';
+import { Suspense, lazy, createElement, useEffect } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Routes, Route, Navigate } from 'react-router';
 import extendedTheme from './theme';
 import DefaultLayout from './components/layouts/DefaultLayout';
 import Loader from './components/Loader';
-import { lazy, createElement } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Web3ContextProvider } from './context/Web3Context';
 import { useMoralis } from 'react-moralis';
-import { useEffect } from 'react';
 
 const App = () => {
 	const { isWeb3Enabled, enableWeb3, isAuthenticated, isWeb3EnableLoading } =
