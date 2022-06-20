@@ -76,7 +76,7 @@ export const dhedgeCoreAbi = [
 			},
 			{
 				internalType: 'bytes',
-				name: '',
+				name: '_agreementData',
 				type: 'bytes',
 			},
 			{
@@ -120,7 +120,7 @@ export const dhedgeCoreAbi = [
 			},
 			{
 				internalType: 'bytes',
-				name: '',
+				name: '_agreementData',
 				type: 'bytes',
 			},
 			{
@@ -164,7 +164,7 @@ export const dhedgeCoreAbi = [
 			},
 			{
 				internalType: 'bytes',
-				name: '',
+				name: '_agreementData',
 				type: 'bytes',
 			},
 			{
@@ -247,12 +247,12 @@ export const dhedgeCoreAbi = [
 			},
 			{
 				internalType: 'bytes',
-				name: '',
+				name: '_agreementData',
 				type: 'bytes',
 			},
 			{
 				internalType: 'bytes',
-				name: '_ctx',
+				name: '',
 				type: 'bytes',
 			},
 		],
@@ -286,12 +286,12 @@ export const dhedgeCoreAbi = [
 			},
 			{
 				internalType: 'bytes',
-				name: '',
+				name: '_agreementData',
 				type: 'bytes',
 			},
 			{
 				internalType: 'bytes',
-				name: '_ctx',
+				name: '',
 				type: 'bytes',
 			},
 		],
@@ -314,9 +314,58 @@ export const dhedgeCoreAbi = [
 				type: 'address',
 			},
 			{
-				internalType: 'address',
-				name: '_token',
+				internalType: 'contract ISuperToken',
+				name: '_superToken',
 				type: 'address',
+			},
+			{
+				internalType: 'uint8',
+				name: '_streamAction',
+				type: 'uint8',
+			},
+			{
+				internalType: 'uint64',
+				name: '_delay',
+				type: 'uint64',
+			},
+			{
+				internalType: 'int96',
+				name: '_flowRate',
+				type: 'int96',
+			},
+		],
+		name: 'calcBufferTransferAmount',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '_transferAmount',
+				type: 'uint256',
+			},
+			{
+				internalType: 'bool',
+				name: '_isTaken',
+				type: 'bool',
+			},
+		],
+		stateMutability: 'view',
+		type: 'function',
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '_user',
+				type: 'address',
+			},
+			{
+				internalType: 'contract ISuperToken',
+				name: '_superToken',
+				type: 'address',
+			},
+			{
+				internalType: 'uint64',
+				name: '_delay',
+				type: 'uint64',
 			},
 		],
 		name: 'calcUserUninvested',
@@ -347,7 +396,7 @@ export const dhedgeCoreAbi = [
 		inputs: [
 			{
 				internalType: 'address',
-				name: '_token',
+				name: '_underlyingToken',
 				type: 'address',
 			},
 		],
@@ -373,7 +422,7 @@ export const dhedgeCoreAbi = [
 		inputs: [
 			{
 				internalType: 'address',
-				name: '_token',
+				name: '_underlyingToken',
 				type: 'address',
 			},
 		],
@@ -417,7 +466,7 @@ export const dhedgeCoreAbi = [
 		inputs: [
 			{
 				internalType: 'address',
-				name: '_token',
+				name: '_underlyingToken',
 				type: 'address',
 			},
 		],
@@ -456,7 +505,7 @@ export const dhedgeCoreAbi = [
 			},
 			{
 				internalType: 'address',
-				name: '_token',
+				name: '_underlyingToken',
 				type: 'address',
 			},
 		],
