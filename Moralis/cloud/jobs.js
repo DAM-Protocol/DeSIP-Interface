@@ -5,7 +5,7 @@ const syncDhedgeAssets = async (request) => {
 	const logger = Moralis.Cloud.getLogger();
 
 	try {
-		const httpResponse = await Moralis.Cloud.httpRequest({
+		await Moralis.Cloud.httpRequest({
 			method: 'POST',
 			url: `https://api-v2.dhedge.org/graphql`,
 			headers: {
@@ -15,20 +15,10 @@ const syncDhedgeAssets = async (request) => {
 		}).then(
 			async function (httpResponse) {
 				let dataObj = JSON.parse(httpResponse.text);
-
 				const assets = dataObj.data.assets;
-				// logger.info(`Found ${assets.length} assets`);
-
-				// filter assets with chainID polygon
 				const filteredAssets = assets.filter(
 					(asset) => asset.blockchainCode === 'POLYGON'
 				);
-
-				// logger.info(
-				// 	`Filtered ${assets.length} assets to ${filteredAssets.length}`
-				// );
-
-				// use filteredAssets address as key
 				const assetsByAddress = filteredAssets.reduce((assets, asset) => {
 					assets[asset.address] = asset;
 					return assets;
@@ -37,16 +27,7 @@ const syncDhedgeAssets = async (request) => {
 				const DhedgeAsset = Moralis.Object.extend('DhedgeAsset');
 
 				for (const assetAddress in assetsByAddress) {
-					const {
-						blockchainCode,
-						address,
-						id,
-						name,
-						type,
-						precision,
-						rate,
-						description,
-					} = assetsByAddress[assetAddress];
+					const { address } = assetsByAddress[assetAddress];
 
 					const query = new Moralis.Query(DhedgeAsset);
 					const existingAsset = await query
@@ -54,54 +35,12 @@ const syncDhedgeAssets = async (request) => {
 						.first({ useMasterKey: true });
 
 					if (existingAsset) {
-						existingAsset.set('blockchainCode', blockchainCode);
-						existingAsset.set('address', address);
-						existingAsset.set('assetId', id);
-						existingAsset.set('name', name);
-						existingAsset.set('type', type);
-						existingAsset.set('precision', precision);
-						existingAsset.set('rate', rate);
-						existingAsset.set('description', description);
-						await existingAsset.save(null, { useMasterKey: true }).then(
-							(object) => {
-								logger.info(
-									'[LOG] : Asset Updated with objectId: ' + object.id
-								);
-							},
-							(error) => {
-								logger.info(
-									'[LOG] : Error creating asset for ' +
-										address +
-										' ' +
-										error.message
-								);
-							}
+						updateExistingDhedgeAsset(
+							existingAsset,
+							assetsByAddress[assetAddress]
 						);
 					} else {
-						const DhedgeAsset = Moralis.Object.extend('DhedgeAsset');
-						const newAsset = new DhedgeAsset();
-
-						newAsset.set('blockchainCode', blockchainCode);
-						newAsset.set('address', address);
-
-						newAsset.set('assetId', id);
-						newAsset.set('name', name);
-						newAsset.set('type', type);
-						newAsset.set('precision', precision);
-						newAsset.set('rate', rate);
-						newAsset.set('description', description);
-
-						await newAsset.save(null, { useMasterKey: true }).then(
-							() => {},
-							(error) => {
-								logger.info(
-									'[LOG] : Error creating asset for ' +
-										address +
-										' ' +
-										error.message
-								);
-							}
-						);
+						addNewDhedgeAsset(assetsByAddress[assetAddress]);
 					}
 				}
 			},
@@ -120,6 +59,66 @@ const syncDhedgeAssets = async (request) => {
 			new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
 	);
 };
+const updateExistingDhedgeAsset = async (
+	existingAsset,
+	{ blockchainCode, address, id, name, type, precision, rate, description }
+) => {
+	const logger = Moralis.Cloud.getLogger();
+
+	existingAsset.set('blockchainCode', blockchainCode);
+	existingAsset.set('address', address);
+	existingAsset.set('assetId', id);
+	existingAsset.set('name', name);
+	existingAsset.set('type', type);
+	existingAsset.set('precision', precision);
+	existingAsset.set('rate', rate);
+	existingAsset.set('description', description);
+	await existingAsset.save(null, { useMasterKey: true }).then(
+		(object) => {
+			// logger.info('[LOG] : Asset Updated with objectId: ' + object.id);
+		},
+		(error) => {
+			logger.info(
+				'[LOG] : Error creating asset for ' + address + ' ' + error.message
+			);
+		}
+	);
+};
+const addNewDhedgeAsset = async ({
+	blockchainCode,
+	address,
+	id,
+	name,
+	type,
+	precision,
+	rate,
+	description,
+}) => {
+	const logger = Moralis.Cloud.getLogger();
+	const DhedgeAsset = Moralis.Object.extend('DhedgeAsset');
+	const newAsset = new DhedgeAsset();
+
+	newAsset.set('blockchainCode', blockchainCode);
+	newAsset.set('address', address);
+
+	newAsset.set('assetId', id);
+	newAsset.set('name', name);
+	newAsset.set('type', type);
+	newAsset.set('precision', precision);
+	newAsset.set('rate', rate);
+	newAsset.set('description', description);
+
+	await newAsset.save(null, { useMasterKey: true }).then(
+		() => {},
+		(error) => {
+			logger.info(
+				'[LOG] : Error creating asset for ' + address + ' ' + error.message
+			);
+		}
+	);
+};
+
+// SYNC DHEDGE FUNDS JOB HELPERS
 
 const syncDhedgeFunds = async (request) => {
 	const logger = Moralis.Cloud.getLogger();
@@ -134,66 +133,7 @@ const syncDhedgeFunds = async (request) => {
 		for (const superDhedgePool of superDhedgePools) {
 			const fundAddress = superDhedgePool.get('dhedgeFundAddress');
 
-			const data = JSON.stringify({
-				query: fundQuery,
-				variables: `{
-					"address": "${fundAddress}"
-				}`,
-			});
-
-			const httpResponse = await Moralis.Cloud.httpRequest({
-				method: 'POST',
-				url: `https://api-v2.dhedge.org/graphql`,
-				headers: {
-					'Content-Type': 'application/json;charset=utf-8',
-				},
-				body: data,
-			});
-
-			const {
-				data: { fund: fundData },
-			} = JSON.parse(httpResponse.text);
-
-			// update row columns with fund data
-			const supportedDepositTokens = fundData.fundComposition
-				.filter((token) => token.isDeposit)
-				.map((token) => token.tokenAddress);
-			superDhedgePool.set('supportedDepositTokens', supportedDepositTokens);
-
-			superDhedgePool.set('managerName', fundData.managerName);
-			superDhedgePool.set('name', fundData.name);
-
-			// update prevAdjustedTokenPrice if lastUpdated one day ago
-			if (
-				!superDhedgePool.get('prevAdjustedTokenPrice')?.updatedAt ||
-				(Date.now() - superDhedgePool.get('prevAdjustedTokenPrice').updatedAt) /
-					86400000 >=
-					1
-			) {
-				superDhedgePool.set('prevAdjustedTokenPrice', {
-					updatedAt: Date.now(),
-					price: superDhedgePool.get('adjustedTokenPrice'),
-				});
-			}
-			// set current token price
-			superDhedgePool.set('adjustedTokenPrice', fundData.adjustedTokenPrice);
-
-			superDhedgePool.set('tokenPrice', fundData.tokenPrice);
-			superDhedgePool.set('performance', fundData.performance);
-			superDhedgePool.set('fundId', fundData.id);
-			superDhedgePool.set('totalValue', fundData.totalValue);
-			superDhedgePool.set('poolDetails', fundData.poolDetails);
-			superDhedgePool.set('riskFactor', fundData.riskFactor);
-			superDhedgePool.set('performanceFactor', fundData.performanceFactor);
-			superDhedgePool.set('performanceMetrics', fundData.performanceMetrics);
-			superDhedgePool.set('leaderboardRank', fundData.leaderboardRank);
-			superDhedgePool.set('isPrivate', fundData.isPrivate);
-
-			await superDhedgePool
-				.save(null, { useMasterKey: true })
-				.then((object) => {
-					logger.info('[LOG] : Fund Updated with objectId: ' + object.id);
-				});
+			updateDhedgeFund(superDhedgePool, fundAddress);
 		}
 	} catch (e) {
 		logger.error(e);
@@ -203,4 +143,83 @@ const syncDhedgeFunds = async (request) => {
 		'[MESSAGE] : Sync Dhedge Funds Completed' +
 			new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
 	);
+};
+
+const updateDhedgeFund = async (superDhedgePool, fundAddress) => {
+	const logger = Moralis.Cloud.getLogger();
+
+	const data = JSON.stringify({
+		query: fundQuery,
+		variables: `{
+					"address": "${fundAddress}"
+				}`,
+	});
+
+	const httpResponse = await Moralis.Cloud.httpRequest({
+		method: 'POST',
+		url: `https://api-v2.dhedge.org/graphql`,
+		headers: {
+			'Content-Type': 'application/json;charset=utf-8',
+		},
+		body: data,
+	});
+
+	const {
+		data: { fund: fundData },
+	} = JSON.parse(httpResponse.text);
+
+	// update row columns with fund data
+	const supportedDepositTokens = fundData.fundComposition
+		.filter((token) => token.isDeposit)
+		.map((token) => token.tokenAddress);
+	superDhedgePool.set('supportedDepositTokens', supportedDepositTokens);
+
+	superDhedgePool.set('managerName', fundData.managerName);
+	superDhedgePool.set('name', fundData.name);
+
+	// update prevAdjustedTokenPrice if lastUpdated one day ago
+	if (
+		!superDhedgePool.get('prevAdjustedTokenPrice')?.updatedAt ||
+		(Date.now() - superDhedgePool.get('prevAdjustedTokenPrice').updatedAt) /
+			86400000 >=
+			1
+	) {
+		superDhedgePool.set('prevAdjustedTokenPrice', {
+			updatedAt: Date.now(),
+			price: superDhedgePool.get('adjustedTokenPrice'),
+		});
+	}
+	// set current token price
+	superDhedgePool.set('adjustedTokenPrice', fundData.adjustedTokenPrice);
+
+	superDhedgePool.set('tokenPrice', fundData.tokenPrice);
+	superDhedgePool.set('performance', fundData.performance);
+	superDhedgePool.set('fundId', fundData.id);
+	superDhedgePool.set('totalValue', fundData.totalValue);
+	superDhedgePool.set('poolDetails', fundData.poolDetails);
+	superDhedgePool.set('riskFactor', fundData.riskFactor);
+	superDhedgePool.set('performanceFactor', fundData.performanceFactor);
+	superDhedgePool.set('performanceMetrics', fundData.performanceMetrics);
+	superDhedgePool.set('leaderboardRank', fundData.leaderboardRank);
+	superDhedgePool.set('isPrivate', fundData.isPrivate);
+
+	await superDhedgePool.save(null, { useMasterKey: true }).then((object) => {
+		logger.info('[LOG] : Fund Updated with objectId: ' + object.id);
+	});
+
+	try {
+		Moralis.Cloud.run(
+			'watchContractEvent',
+			getWatchEventOptions(
+				'TokenDeposited',
+				superDhedgePool.get('superPoolAddress'),
+				{
+					sync_historical: true,
+				}
+			),
+			{ useMasterKey: true }
+		);
+	} catch (error) {
+		logger.error('[ERROR] : ' + error.message);
+	}
 };

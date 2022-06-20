@@ -38,3 +38,18 @@ Moralis.Cloud.beforeSave('SuperDhedgePool', function (request) {
 		object.set('supportedSuperTokens', supportedSuperTokensLower);
 	}
 });
+
+Moralis.Cloud.afterSave('SuperDhedgeTokenDeposited', async function (request) {
+	const { object } = request;
+	const poolAddress = object.get('address');
+
+	const SuperDhedgePool = Moralis.Object.extend('SuperDhedgePool');
+	const query = new Moralis.Query(SuperDhedgePool);
+	query.equalTo('superPoolAddress', poolAddress);
+	const superDhedgePool = await query.first();
+
+	if (superDhedgePool) {
+		superDhedgePool.set('lastDeposit', object.get('block_timestamp'));
+		await superDhedgePool.save(null, { useMasterKey: true });
+	}
+});
