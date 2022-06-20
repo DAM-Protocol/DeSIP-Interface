@@ -16,8 +16,7 @@ import { ExternalLink, NavLink } from './Links';
 import { VscClose } from 'react-icons/vsc';
 import { RiMenu5Fill } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useChain, useMoralis } from 'react-moralis';
-import { useEffect } from 'react';
+import { useChain } from 'react-moralis';
 
 const Navbar = (props) => {
 	const bgColor = useColorModeValue('whiteAlpha.800', 'blackAlpha.700');
@@ -43,7 +42,7 @@ const Navbar = (props) => {
 				zIndex={999}
 			>
 				<NavLink to='/'>
-					<Text fontSize='lg' fontWeight='bold'>
+					<Text fontSize='lg' fontWeight='bold' as='span'>
 						DeSIP
 					</Text>
 				</NavLink>
