@@ -14,7 +14,7 @@ const RateInput = ({
 			<Input
 				min={0}
 				value={streamRate}
-				onChange={(e) => setStreamRate(e.target.value)}
+				onChange={(e) => setStreamRate(() => (e.target.value || 0).toString())}
 				autoComplete='new-password'
 				type='number'
 				id='rate'
