@@ -1,10 +1,11 @@
-import { Text, Divider, Flex, Tooltip } from '@chakra-ui/react';
+import { Text, Divider, Flex, Tooltip, Tag } from '@chakra-ui/react';
 
 const BufferDisplay = ({ tokenName = 'ETH', bufferAmount = 0, isTaken }) => {
 	return (
 		<Flex w='100%' gap='4' align='end'>
-			<Text as='label'>Buffer Adjustment</Text>
-			{/* <Tooltip>Hello</Tooltip> */}
+			<Tooltip label='Amount of buffer needed to start a stream'>
+				<Tag as='label'>Buffer Adjustment</Tag>
+			</Tooltip>
 			<Divider flex='1' mb='1' />
 			<Text
 				as='span'
