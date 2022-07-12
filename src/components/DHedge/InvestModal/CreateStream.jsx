@@ -8,7 +8,7 @@ import {
 	useInterval,
 	useToast,
 } from '@chakra-ui/react';
-import { useState, useRef, useEffect, useContext, useMemo } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import { useMoralis, useWeb3ExecuteFunction } from 'react-moralis';
 import { dhedgeCoreAbi } from '../../../abi/dhedgeCore';
 import { Web3Context } from '../../../context/Web3Context';
@@ -127,7 +127,18 @@ const CreateStream = ({ poolData }) => {
 			publisher: poolData?.superPoolAddress,
 		});
 
-		await sf.batchCall([createFlowOp, approveOp]).exec(sfSigner);
+		await sf
+			.batchCall([createFlowOp, approveOp])
+			.exec(sfSigner)
+			.then(() => {
+				toast({
+					title: 'Stream created',
+					description: 'Your stream has been created',
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
+				});
+			});
 	};
 
 	const updateStream = async () => {
@@ -163,9 +174,18 @@ const CreateStream = ({ poolData }) => {
 		});
 		txs.push(updateStreamOp);
 
-		const receipt = await sf.batchCall(txs).exec(sfSigner);
-
-		console.log(receipt);
+		await sf
+			.batchCall(txs)
+			.exec(sfSigner)
+			.then(() => {
+				toast({
+					title: 'Stream updated',
+					description: 'Your stream has been updated',
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
+				});
+			});
 
 		// 4. If shares in locked index are greater than 0 AND last distribution for the locked index was greater than 24 hours.
 		//	- Approve the subscription in the unlocked permanent index.
@@ -221,9 +241,30 @@ const CreateStream = ({ poolData }) => {
 			approvalTxs.push(approveOp);
 		}
 
-		if (approvalTxs.length > 1) await sf.batchCall(approvalTxs).exec(sfSigner);
+		if (approvalTxs.length > 1)
+			await sf
+				.batchCall(approvalTxs)
+				.exec(sfSigner)
+				.then(() => {
+					toast({
+						title: 'Approved subscriptions',
+						status: 'success',
+						duration: 9000,
+						isClosable: true,
+					});
+				});
 		else if (approvalTxs.length === 1)
-			await sf.batchCall(approvalTxs).exec(sfSigner);
+			await sf
+				.batchCall(approvalTxs)
+				.exec(sfSigner)
+				.then(() => {
+					toast({
+						title: 'Approved subscriptions',
+						status: 'success',
+						duration: 9000,
+						isClosable: true,
+					});
+				});
 	};
 
 	useInterval(() => {
