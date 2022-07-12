@@ -6,6 +6,7 @@ import {
 	useColorModeValue,
 	Button,
 	useInterval,
+	useToast,
 } from '@chakra-ui/react';
 import { useState, useRef, useEffect, useContext, useMemo } from 'react';
 import { useMoralis, useWeb3ExecuteFunction } from 'react-moralis';
@@ -18,6 +19,11 @@ import SuperTokenSelector from './SuperTokenSelector';
 const CreateStream = ({ poolData }) => {
 	const { isWeb3Enabled, account, Moralis } = useMoralis();
 	const { sfProvider, initialiseSf, sf, sfSigner } = useContext(Web3Context);
+	const {
+		Units,
+		web3Library: { BigNumber },
+	} = Moralis;
+	const toast = useToast();
 
 	useEffect(() => {
 		if (!sfProvider && isWeb3Enabled) {
@@ -53,25 +59,15 @@ const CreateStream = ({ poolData }) => {
 					providerOrSigner: sfProvider,
 				})
 				.then(({ flowRate }) => {
-					setExistingStreamRate(
-						Number(
-							Moralis.Units.FromWei(
-								Moralis.web3Library.BigNumber.from(flowRate)
-									.mul(30 * 86400)
-									.toString()
-							)
-						).toFixed(5)
-					);
-
-					setStreamRate(
-						Number(
-							Moralis.Units.FromWei(
-								Moralis.web3Library.BigNumber.from(flowRate)
-									.mul(30 * 86400)
-									.toString()
-							)
-						).toFixed(5)
-					);
+					const formattedRate = Number(
+						Units.FromWei(
+							BigNumber.from(flowRate)
+								.mul(30 * 86400)
+								.toString()
+						)
+					).toFixed(5);
+					setExistingStreamRate(formattedRate);
+					setStreamRate(formattedRate);
 				});
 	}, [Moralis, account, poolData, selectedToken, sfProvider]);
 
@@ -86,9 +82,9 @@ const CreateStream = ({ poolData }) => {
 					_superToken: selectedToken?.superTokenAddress,
 					_streamAction: 1,
 					_delay: 60 * 10, //in seconds
-					_flowRate: Moralis.web3Library.BigNumber.from(
-						Moralis.Units.ETH(streamRate ?? '0')
-					).div(30 * 86400),
+					_flowRate: BigNumber.from(Units.ETH(streamRate ?? '0')).div(
+						30 * 86400
+					),
 				},
 			},
 			{
@@ -113,22 +109,17 @@ const CreateStream = ({ poolData }) => {
 		);
 
 	const createStream = async () => {
-		// if bufferAmount is 0,
-		const createFlowOp = sf.cfaV1.createFlow({
+		const flowOptions = {
 			superToken: selectedToken?.superTokenAddress,
 			receiver: poolData?.superPoolAddress,
-			flowRate: Moralis.web3Library.BigNumber.from(
-				Moralis.Units.ETH(streamRate ?? '0')
-			).div(30 * 86400),
-		});
-
-		await getTokenDistIndices();
-		console.log('Token Dist Obj: ', tokenDistObj);
-
+			flowRate: BigNumber.from(Units.ETH(streamRate ?? '0'))
+				.div(30 * 86400)
+				.toString(),
+		};
+		const createFlowOp = sf.cfaV1.createFlow(flowOptions);
+		const tokenDistObj = await getTokenDistIndices();
 		const tokenDistIndex =
 			tokenDistObj[3] === tokenDistObj[0] ? tokenDistObj[1] : tokenDistObj[0];
-
-		console.log('Token dist index: ', tokenDistIndex);
 
 		const approveOp = sf.idaV1.approveSubscription({
 			indexId: tokenDistIndex,
@@ -153,9 +144,7 @@ const CreateStream = ({ poolData }) => {
 				providerOrSigner: sfSigner,
 			});
 			if (
-				Moralis.web3Library.BigNumber.from(poolSuperTokenAllowance).lt(
-					bufferObject._transferAmount
-				)
+				BigNumber.from(poolSuperTokenAllowance).lt(bufferObject._transferAmount)
 			) {
 				txs.push(
 					selectedToken.superToken.approve({
@@ -170,9 +159,7 @@ const CreateStream = ({ poolData }) => {
 		const updateStreamOp = sf.cfaV1.updateFlow({
 			superToken: selectedToken?.superTokenAddress,
 			receiver: poolData?.superPoolAddress,
-			flowRate: Moralis.web3Library.BigNumber.from(
-				Moralis.Units.ETH(streamRate ?? '0')
-			).div(30 * 86400),
+			flowRate: BigNumber.from(Units.ETH(streamRate ?? '0')).div(30 * 86400),
 		});
 		txs.push(updateStreamOp);
 
@@ -270,9 +257,7 @@ const CreateStream = ({ poolData }) => {
 			<BufferDisplay
 				tokenName={selectedToken?.symbol}
 				bufferAmount={Number(
-					Moralis.Units.FromWei(
-						bufferObject?._transferAmount?.toString() ?? '0'
-					)
+					Units.FromWei(bufferObject?._transferAmount?.toString() ?? '0')
 				).toFixed(5)}
 				isTaken={bufferObject?._isTaken}
 			/>
@@ -283,7 +268,7 @@ const CreateStream = ({ poolData }) => {
 				colorScheme={'blue'}
 				disabled={existingStreamRate === streamRate}
 				onClick={() =>
-					existingStreamRate === '0' ? createStream() : updateStream()
+					Number(existingStreamRate) === 0 ? createStream() : updateStream()
 				}
 			>
 				{existingStreamRate > 0 ? `Edit` : `Start`} Stream
