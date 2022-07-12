@@ -141,13 +141,16 @@ const CreateStream = ({ poolData }) => {
 			});
 	};
 
+	// 1. Calculate buffer transfer amount.
+	// 2. If current stream rate < new stream rate:
+	//	- Check if allowance is there to transfer the buffer amount.
+	//	- If not, get approval for supertoken.
+	// 3. Create an update stream object.
+	// 4. If shares in locked index are greater than 0 AND last distribution for the locked index was greater than 24 hours.
+	//	- Approve the subscription in the unlocked permanent index.
+	//	- Approve the subscription in temporary index.
 	const updateStream = async () => {
 		const txs = [];
-		// 1. Calculate buffer transfer amount.
-
-		// 2. If current stream rate < new stream rate:
-		//	- Check if allowance is there to transfer the buffer amount.
-		//	- If not, get approval for supertoken.
 		if (streamRate > existingStreamRate) {
 			const poolSuperTokenAllowance = await selectedToken.superToken.allowance({
 				owner: account,
@@ -166,7 +169,6 @@ const CreateStream = ({ poolData }) => {
 				);
 			}
 		}
-		// 3. Create an update stream object.
 		const updateStreamOp = sf.cfaV1.updateFlow({
 			superToken: selectedToken?.superTokenAddress,
 			receiver: poolData?.superPoolAddress,
@@ -187,17 +189,9 @@ const CreateStream = ({ poolData }) => {
 				});
 			});
 
-		// 4. If shares in locked index are greater than 0 AND last distribution for the locked index was greater than 24 hours.
-		//	- Approve the subscription in the unlocked permanent index.
-		//	- Approve the subscription in temporary index.
-
-		// const tokenDistObj = await getTokenDistIndices();
-		// console.log('Token Dist Obj: ', tokenDistObj);
-
+		const tokenDistObj = await getTokenDistIndices();
 		const alternatePermIndexId =
 			tokenDistObj[3] === tokenDistObj[0] ? tokenDistObj[1] : tokenDistObj[0];
-
-		// console.log('Perm index id: ', alternatePermIndexId);
 
 		const alternatePermIndexSubObj = await sf.idaV1.getSubscription({
 			superToken: poolData?.poolSuperToken,
@@ -267,6 +261,7 @@ const CreateStream = ({ poolData }) => {
 				});
 	};
 
+	// periodically calculate buffer amount
 	useInterval(() => {
 		calcBufferTransferAmount();
 	}, 10 * 1000);
