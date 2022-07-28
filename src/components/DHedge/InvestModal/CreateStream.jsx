@@ -151,6 +151,18 @@ const CreateStream = ({ poolData }) => {
 	//	- Approve the subscription in temporary index.
 	const updateStream = async () => {
 		const txs = [];
+		if (BigNumber.from(streamRate).eq(0)) {
+			toast({
+				title: 'Error',
+				description:
+					'Stream rate cannot be 0. Streams can be closed from the dashboard',
+				status: 'error',
+				duration: 9000,
+				isClosable: true,
+			});
+			return;
+		}
+
 		if (streamRate > existingStreamRate) {
 			const poolSuperTokenAllowance = await selectedToken.superToken.allowance({
 				owner: account,
