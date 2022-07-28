@@ -153,17 +153,6 @@ const CreateStream = ({ poolData }) => {
 	//	- Approve the subscription in temporary index.
 	const updateStream = async () => {
 		const txs = [];
-		if (BigNumber.from(streamRate).eq(0)) {
-			toast({
-				title: 'Error',
-				description:
-					'Stream rate cannot be 0. Streams can be closed from the dashboard',
-				status: 'error',
-				duration: 9000,
-				isClosable: true,
-			});
-			return;
-		}
 
 		if (streamRate > existingStreamRate) {
 			const poolSuperTokenAllowance = await selectedToken.superToken.allowance({
@@ -275,6 +264,21 @@ const CreateStream = ({ poolData }) => {
 				});
 	};
 
+	const handleCTAClick = () => {
+		if (BigNumber.from(Units.ETH(streamRate)).eq(0)) {
+			toast({
+				title: 'Error',
+				description: `Stream rate cannot be 0. If you want to close the stream, head over to dashboard`,
+				status: 'error',
+				duration: 9000,
+				isClosable: true,
+			});
+			return;
+		}
+		if (Number(existingStreamRate) === 0) createStream();
+		else updateStream();
+	};
+
 	// periodically calculate buffer amount
 	useInterval(() => {
 		calcBufferTransferAmount();
@@ -319,9 +323,7 @@ const CreateStream = ({ poolData }) => {
 			<Button
 				colorScheme={'blue'}
 				disabled={existingStreamRate === streamRate}
-				onClick={() =>
-					Number(existingStreamRate) === 0 ? createStream() : updateStream()
-				}
+				onClick={handleCTAClick}
 			>
 				{existingStreamRate > 0 ? `Edit` : `Start`} Stream
 			</Button>
