@@ -111,6 +111,25 @@ const CreateStream = ({ poolData }) => {
 		);
 
 	const createStream = async () => {
+		const txs = [];
+
+		const poolSuperTokenAllowance = await selectedToken.superToken.allowance({
+			owner: account,
+			spender: poolData.superPoolAddress,
+			providerOrSigner: sfSigner,
+		});
+		if (
+			BigNumber.from(poolSuperTokenAllowance).lt(bufferObject._transferAmount)
+		) {
+			txs.push(
+				selectedToken.superToken.approve({
+					receiver: poolData.superPoolAddress,
+					amount: bufferObject._transferAmount,
+					providerOrSigner: sfSigner,
+				})
+			);
+		}
+
 		const flowOptions = {
 			superToken: selectedToken?.superTokenAddress,
 			receiver: poolData?.superPoolAddress,
@@ -119,6 +138,8 @@ const CreateStream = ({ poolData }) => {
 				.toString(),
 		};
 		const createFlowOp = sf.cfaV1.createFlow(flowOptions);
+		txs.push(createFlowOp);
+
 		const tokenDistObj = await getTokenDistIndices();
 		const tokenDistIndex =
 			tokenDistObj[3] === tokenDistObj[0] ? tokenDistObj[1] : tokenDistObj[0];
@@ -128,9 +149,10 @@ const CreateStream = ({ poolData }) => {
 			superToken: poolData?.poolSuperToken, // DHPTx
 			publisher: poolData?.superPoolAddress,
 		});
+		txs.push(approveOp);
 
 		await sf
-			.batchCall([createFlowOp, approveOp])
+			.batchCall(txs)
 			.exec(sfSigner)
 			.then(() => {
 				toast({
@@ -275,7 +297,7 @@ const CreateStream = ({ poolData }) => {
 			});
 			return;
 		}
-		if (Number(existingStreamRate) === 0) createStream();
+		if (BigNumber.from(Units.FromWei(existingStreamRate)).eq(0)) createStream();
 		else updateStream();
 	};
 
