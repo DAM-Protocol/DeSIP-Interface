@@ -59,13 +59,15 @@ const CreateStream = ({ poolData }) => {
 					providerOrSigner: sfProvider,
 				})
 				.then(({ flowRate }) => {
-					const formattedRate = Number(
-						Units.FromWei(
-							BigNumber.from(flowRate)
-								.mul(30 * 86400)
-								.toString()
-						)
-					).toFixed(5);
+					const formattedRate = parseFloat(
+						Number(
+							Units.FromWei(
+								BigNumber.from(flowRate)
+									.mul(30 * 86400)
+									.toString()
+							)
+						).toFixed(5)
+					);
 					setExistingStreamRate(formattedRate);
 					setStreamRate(formattedRate);
 				});
@@ -304,9 +306,11 @@ const CreateStream = ({ poolData }) => {
 
 			<BufferDisplay
 				tokenName={selectedToken?.symbol}
-				bufferAmount={Number(
-					Units.FromWei(bufferObject?._transferAmount?.toString() ?? '0')
-				).toFixed(5)}
+				bufferAmount={parseFloat(
+					Number(
+						Units.FromWei(bufferObject?._transferAmount?.toString() ?? '0')
+					).toFixed(5)
+				)}
 				isTaken={bufferObject?._isTaken}
 			/>
 

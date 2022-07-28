@@ -1,4 +1,15 @@
-import { FormControl, Input } from '@chakra-ui/react';
+import {
+	FormControl,
+	Input,
+	InputGroup,
+	InputLeftAddon,
+	InputLeftElement,
+	InputRightAddon,
+	InputRightElement,
+	Tag,
+	Text,
+} from '@chakra-ui/react';
+import { useMoralis } from 'react-moralis';
 
 const RateInput = ({
 	selectedToken,
@@ -6,10 +17,18 @@ const RateInput = ({
 	setStreamRate,
 	rateInputRef,
 }) => {
+	const { Moralis } = useMoralis();
+	const {
+		Units,
+		web3Library: { BigNumber },
+	} = Moralis;
 	return (
 		<FormControl aria-autocomplete='none'>
 			<label htmlFor='rate'>
-				Rate ({(selectedToken?.symbol || '') + 'x' || 'Tokens'}/month)
+				Rate{' '}
+				<Text as='span' fontSize='14'>
+					/month
+				</Text>
 			</label>
 			<Input
 				min={0}
@@ -20,6 +39,13 @@ const RateInput = ({
 				id='rate'
 				ref={rateInputRef}
 			/>
+			<Text as='span' fontSize='14' pl='4'>
+				{/* Display Flow in /s */}
+				{Units.FromWei(
+					BigNumber.from(Units.ETH(streamRate ?? '0')).div(30 * 86400)
+				)}{' '}
+				{(selectedToken?.symbol || '') + 'x' || 'Tokens'}/s
+			</Text>
 		</FormControl>
 	);
 };
