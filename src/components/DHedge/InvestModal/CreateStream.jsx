@@ -16,7 +16,7 @@ import BufferDisplay from './BufferDisplay';
 import RateInput from './RateInput';
 import SuperTokenSelector from './SuperTokenSelector';
 
-const CreateStream = ({ poolData }) => {
+const CreateStream = ({ poolData, defaultSelectedToken }) => {
 	const { isWeb3Enabled, account, Moralis } = useMoralis();
 	const { sfProvider, initialiseSf, sf, sfSigner } = useContext(Web3Context);
 	const {
@@ -322,6 +322,7 @@ const CreateStream = ({ poolData }) => {
 				rateInputRef={rateInputRef}
 				selectedToken={selectedToken}
 				setSelectedToken={setSelectedToken}
+				defaultSelectedToken={defaultSelectedToken}
 			/>
 			<RateInput
 				selectedToken={selectedToken}

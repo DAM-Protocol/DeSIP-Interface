@@ -15,6 +15,7 @@ const SuperTokenSelector = ({
 	rateInputRef,
 	selectedToken,
 	setSelectedToken,
+	defaultSelectedToken,
 }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleSelect = (token) => {
@@ -46,11 +47,19 @@ const SuperTokenSelector = ({
 	}, [poolData]);
 
 	useEffect(() => {
-		if (!selectedToken && depositSuperTokens?.[0] && assetLookup) {
-			const defaultToken = depositSuperTokens[0];
+		let defaultToken;
+		if (!selectedToken && assetLookup) {
+			if (defaultSelectedToken) {
+				defaultToken = depositSuperTokens.find(
+					(token) => token.address === defaultSelectedToken
+				);
+			}
+			if (depositSuperTokens?.[0]) {
+				defaultToken = depositSuperTokens[0];
+			}
 			setSelectedToken({
 				...defaultToken,
-				name: assetLookup?.[defaultToken.address]?.name,
+				name: assetLookup[defaultToken.address],
 				symbol: assetLookup?.[defaultToken.address]?.name,
 				icon: assetLookup?.[defaultToken.address]?.imageURL,
 			});

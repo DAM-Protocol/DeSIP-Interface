@@ -13,17 +13,19 @@ import {
 	Skeleton,
 	Flex,
 	useInterval,
+	useToast,
 } from '@chakra-ui/react';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { useMoralis, useWeb3ExecuteFunction } from 'react-moralis';
 import { dhedgeCoreAbi } from '../../../abi/dhedgeCore';
 import { Web3Context } from '../../../context/Web3Context';
 
-const StreamTable = ({ poolData }) => {
+const StreamTable = ({ poolData, setSelectedToken }) => {
 	const { account } = useMoralis();
-	const { sf } = useContext(Web3Context);
+	const { sf, sfSigner } = useContext(Web3Context);
 	const [streams, setStreams] = useState();
+	const toast = useToast();
 
 	useEffect(() => {
 		if (sf && poolData) {
@@ -34,7 +36,6 @@ const StreamTable = ({ poolData }) => {
 				})
 				.then((res) => {
 					setStreams(res?.data);
-					console.log(res);
 				})
 				.catch((e) => console.log('fetch streams failed', e));
 		}
@@ -59,6 +60,39 @@ const StreamTable = ({ poolData }) => {
 	}, [poolData]);
 
 	const headBg = useColorModeValue('bg.white.50', 'bg.dark.950');
+
+	const handleDeleteStream = useCallback(
+		async (superTokenAddress) => {
+			// delete superdfluid stream
+			sf.cfaV1
+				.deleteFlow({
+					sender: account,
+					receiver: poolData.superPoolAddress,
+					superToken: superTokenAddress,
+				})
+				.exec(sfSigner)
+				.then(() => {
+					toast({
+						title: 'Stream deleted',
+						description: 'Stream has been deleted',
+						status: 'success',
+						duration: 9000,
+						isClosable: true,
+					});
+				})
+				.catch((e) => {
+					toast({
+						title: 'Stream could not be deleted',
+						description: 'Check console for errors',
+						status: 'error',
+						duration: 9000,
+						isClosable: true,
+					});
+					console.error(e);
+				});
+		},
+		[account, poolData, sf, toast]
+	);
 
 	return (
 		<>
@@ -87,6 +121,8 @@ const StreamTable = ({ poolData }) => {
 										hasLoaded
 										stream={stream}
 										depositSuperTokens={depositSuperTokens}
+										handleDeleteStream={handleDeleteStream}
+										setSelectedToken={setSelectedToken}
 									/>
 								);
 							})
@@ -105,7 +141,13 @@ const StreamTable = ({ poolData }) => {
 	);
 };
 
-const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
+const StreamRow = ({
+	stream,
+	depositSuperTokens,
+	hasLoaded,
+	handleDeleteStream,
+	setSelectedToken,
+}) => {
 	const { Moralis, isWeb3Enabled } = useMoralis();
 
 	const {
@@ -170,10 +212,20 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 			</Td>
 
 			<Td textAlign='center'>
-				<Button variant='ghost' colorScheme='yellow' p='2'>
+				<Button
+					variant='ghost'
+					colorScheme='yellow'
+					p='2'
+					onClick={() => setSelectedToken(stream?.token.id)}
+				>
 					<Icon as={AiOutlineEdit}></Icon>
 				</Button>{' '}
-				<Button variant='ghost' colorScheme='red' p='2'>
+				<Button
+					variant='ghost'
+					colorScheme='red'
+					p='2'
+					onClick={() => handleDeleteStream(stream.token.id)}
+				>
 					<Icon as={AiOutlineDelete}></Icon>
 				</Button>
 			</Td>

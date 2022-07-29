@@ -16,9 +16,13 @@ import ModalLayout from '../layouts/ModalLayout';
 import DhptStats from './DhptStats';
 
 const UserPoolData = ({ poolData }) => {
-	const [defaultSelectedToken, setStreamToken] = useState();
-
+	const [defaultSelectedToken, setDefaultSelectedToken] = useState();
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const setSelectedToken = (superTokenAddress) => {
+		setDefaultSelectedToken(superTokenAddress);
+		onOpen();
+		console.log(superTokenAddress);
+	};
 
 	return (
 		<VStack
@@ -42,7 +46,7 @@ const UserPoolData = ({ poolData }) => {
 
 			{/* all streams to the pool and their data */}
 			<Box overflow='auto' w='100%'>
-				<StreamTable poolData={poolData} setStreamToken={setStreamToken} />
+				<StreamTable poolData={poolData} setSelectedToken={setSelectedToken} />
 			</Box>
 
 			<Spacer />
