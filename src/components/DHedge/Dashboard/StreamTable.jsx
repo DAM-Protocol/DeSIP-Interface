@@ -12,10 +12,11 @@ import {
 	useColorModeValue,
 	Skeleton,
 	Flex,
+	useInterval,
 } from '@chakra-ui/react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
-import { useMoralis, useWeb3Contract } from 'react-moralis';
+import { useMoralis, useWeb3ExecuteFunction } from 'react-moralis';
 import { dhedgeCoreAbi } from '../../../abi/dhedgeCore';
 import { Web3Context } from '../../../context/Web3Context';
 
@@ -33,6 +34,7 @@ const StreamTable = ({ poolData }) => {
 				})
 				.then((res) => {
 					setStreams(res?.data);
+					console.log(res);
 				})
 				.catch((e) => console.log('fetch streams failed', e));
 		}
@@ -107,11 +109,10 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 	const { Moralis, isWeb3Enabled } = useMoralis();
 
 	const {
-		data,
-		runContractFunction,
+		data: userUninvested,
+		fetch: calcUserUninvested,
 		isLoading: isUninvestedDataLoading,
-		isFetching: isUninvestedFetching,
-	} = useWeb3Contract({
+	} = useWeb3ExecuteFunction({
 		contractAddress: stream?.receiver,
 		abi: dhedgeCoreAbi,
 		functionName: 'calcUserUninvested',
@@ -123,14 +124,16 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 	});
 
 	useEffect(() => {
-		(async () => {
-			if (stream && isWeb3Enabled) runContractFunction();
-		})();
-	}, [stream, isWeb3Enabled, runContractFunction, Moralis]);
+		if (stream && isWeb3Enabled && calcUserUninvested) calcUserUninvested();
+	}, [stream, isWeb3Enabled, calcUserUninvested, Moralis]);
 
 	const fromWei = (number = 0, decimals = 18) => {
 		return Number(Moralis.Units.FromWei(number, decimals));
 	};
+
+	useInterval(() => {
+		if (stream && isWeb3Enabled && calcUserUninvested) calcUserUninvested();
+	}, 1000);
 
 	return (
 		<Tr>
@@ -161,11 +164,8 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 			</Td>
 
 			<Td textAlign='center'>
-				<Skeleton
-					as={Text}
-					isLoaded={!isUninvestedDataLoading && !isUninvestedFetching}
-				>
-					{fromWei(data?.toString()) || '---'}
+				<Skeleton as={Text} isLoaded={!isUninvestedDataLoading}>
+					{fromWei(userUninvested?.toString()) || '---'}
 				</Skeleton>
 			</Td>
 
