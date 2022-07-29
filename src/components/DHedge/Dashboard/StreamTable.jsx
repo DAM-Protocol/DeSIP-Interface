@@ -117,7 +117,8 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 		functionName: 'calcUserUninvested',
 		params: {
 			_user: stream?.sender,
-			_token: stream?.token.underlyingAddress,
+			_superToken: stream?.token.id,
+			_delay: 10,
 		},
 	});
 
@@ -146,18 +147,16 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 			{/* Current Flow Rate */}
 			<Td textAlign='center'>
 				<Skeleton as={Text} isLoaded={hasLoaded}>
-					{(fromWei(stream?.currentFlowRate) * 86400 * 30).toFixed(2) || '---'}
+					{fromWei(stream?.currentFlowRate) * 86400 * 30 || '---'}
 				</Skeleton>
 			</Td>
 
 			{/* Total Streamed */}
 			<Td textAlign='center'>
 				<Skeleton as={Text} isLoaded={hasLoaded}>
-					{(
-						fromWei(stream?.streamedUntilUpdatedAt) +
+					{fromWei(stream?.streamedUntilUpdatedAt) +
 						fromWei(stream?.currentFlowRate) *
-							(Date.now() / 1000 - stream?.updatedAtTimestamp)
-					).toFixed(2) || '---'}
+							(Date.now() / 1000 - stream?.updatedAtTimestamp) || '---'}
 				</Skeleton>
 			</Td>
 
@@ -166,7 +165,7 @@ const StreamRow = ({ stream, depositSuperTokens, hasLoaded }) => {
 					as={Text}
 					isLoaded={!isUninvestedDataLoading && !isUninvestedFetching}
 				>
-					{fromWei(data?.toString()).toFixed(2) || '---'}
+					{fromWei(data?.toString()) || '---'}
 				</Skeleton>
 			</Td>
 
