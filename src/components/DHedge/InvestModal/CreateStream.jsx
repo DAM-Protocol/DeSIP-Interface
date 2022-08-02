@@ -11,6 +11,7 @@ import {
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useMoralis, useWeb3ExecuteFunction } from 'react-moralis';
 import { dhedgeCoreAbi } from '../../../abi/dhedgeCore';
+import { erc20Abi } from '../../../abi/erc20';
 import { Web3Context } from '../../../context/Web3Context';
 import BufferDisplay from './BufferDisplay';
 import RateInput from './RateInput';

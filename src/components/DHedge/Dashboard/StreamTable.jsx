@@ -98,7 +98,7 @@ const StreamTable = ({ poolData, setSelectedToken }) => {
 		<>
 			{streams?.length ? (
 				<Table size='sm' variant='unstyled'>
-					<Thead position='sticky' top='0' bg={headBg} zIndex='9'>
+					<Thead position='sticky' top='0' zIndex='9'>
 						<Tr>
 							<Th textAlign='center'>Asset</Th>
 							<Th textAlign='center'>
