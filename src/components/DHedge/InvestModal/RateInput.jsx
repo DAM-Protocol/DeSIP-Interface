@@ -2,15 +2,12 @@ import {
 	FormControl,
 	Input,
 	InputGroup,
-	InputLeftAddon,
-	InputLeftElement,
 	InputRightAddon,
-	InputRightElement,
-	Tag,
 	Text,
 } from '@chakra-ui/react';
 import { useMoralis, useWeb3ExecuteFunction } from 'react-moralis';
 import { erc20Abi } from '../../../abi/erc20';
+import decimalFormatter from '../../../utils/decimalFormatter';
 
 const RateInput = ({
 	selectedToken,
@@ -37,8 +34,6 @@ const RateInput = ({
 		}
 	);
 
-	console.log('selectedTokenBalance', selectedTokenBalance, selectedToken);
-
 	return (
 		<FormControl aria-autocomplete='none'>
 			<label htmlFor='rate'>
@@ -60,13 +55,18 @@ const RateInput = ({
 					ref={rateInputRef}
 				/>
 				<InputRightAddon fontSize={12}>
-					Balance {Units.FromWei(selectedTokenBalance?.toString() || 0)}
+					Balance{' '}
+					{decimalFormatter(
+						Units.FromWei(selectedTokenBalance?.toString() || 0)
+					)}
 				</InputRightAddon>
 			</InputGroup>
 			<Text as='span' fontSize='14' pl='4'>
 				{/* Display Flow in /s */}
-				{Units.FromWei(
-					BigNumber.from(Units.ETH(streamRate ?? '0')).div(30 * 86400)
+				{decimalFormatter(
+					Units.FromWei(
+						BigNumber.from(Units.ETH(streamRate ?? '0')).div(30 * 86400)
+					)
 				)}{' '}
 				{(selectedToken?.symbol || '') + 'x' || 'Tokens'}/s
 			</Text>

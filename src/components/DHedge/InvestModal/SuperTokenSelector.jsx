@@ -48,7 +48,7 @@ const SuperTokenSelector = ({
 
 	useEffect(() => {
 		let defaultToken;
-		if (!selectedToken && assetLookup) {
+		if (!selectedToken?.name && assetLookup) {
 			if (defaultSelectedToken) {
 				defaultToken = depositSuperTokens.find(
 					(token) => token.address === defaultSelectedToken
@@ -59,12 +59,18 @@ const SuperTokenSelector = ({
 			}
 			setSelectedToken({
 				...defaultToken,
-				name: assetLookup[defaultToken.address],
-				symbol: assetLookup?.[defaultToken.address]?.name,
-				icon: assetLookup?.[defaultToken.address]?.imageURL,
+				name: assetLookup[defaultToken?.address],
+				symbol: assetLookup?.[defaultToken?.address]?.name,
+				icon: assetLookup?.[defaultToken?.address]?.imageURL,
 			});
 		}
-	}, [depositSuperTokens, selectedToken, assetLookup]);
+	}, [
+		depositSuperTokens,
+		selectedToken,
+		assetLookup,
+		defaultSelectedToken,
+		setSelectedToken,
+	]);
 
 	return (
 		<>

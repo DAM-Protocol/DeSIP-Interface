@@ -1,4 +1,5 @@
 import { Text, Divider, Flex, Tooltip, Tag } from '@chakra-ui/react';
+import decimalFormatter from '../../../utils/decimalFormatter';
 
 const BufferDisplay = ({ tokenName = 'ETH', bufferAmount = 0, isTaken }) => {
 	return (
@@ -12,7 +13,8 @@ const BufferDisplay = ({ tokenName = 'ETH', bufferAmount = 0, isTaken }) => {
 				w='fit-content'
 				color={!isTaken ? 'green.400' : 'orange.400'}
 			>
-				{!isTaken ? '+' : '-'} {(bufferAmount ?? '0') + ` ${tokenName}x`}
+				{!isTaken ? '+' : '-'}{' '}
+				{(decimalFormatter(bufferAmount) ?? '0') + ` ${tokenName}x`}
 			</Text>
 		</Flex>
 	);

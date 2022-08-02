@@ -20,6 +20,7 @@ import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { useMoralis, useWeb3ExecuteFunction } from 'react-moralis';
 import { dhedgeCoreAbi } from '../../../abi/dhedgeCore';
 import { Web3Context } from '../../../context/Web3Context';
+import decimalFormatter from '../../../utils/decimalFormatter';
 
 const StreamTable = ({ poolData, setSelectedToken }) => {
 	const { account } = useMoralis();
@@ -192,22 +193,25 @@ const StreamRow = ({
 			{/* Current Flow Rate */}
 			<Td textAlign='center'>
 				<Skeleton as={Text} isLoaded={hasLoaded}>
-					{fromWei(stream?.currentFlowRate) * 86400 * 30 || '---'}
+					{decimalFormatter(fromWei(stream?.currentFlowRate) * 86400 * 30) ||
+						'---'}
 				</Skeleton>
 			</Td>
 
 			{/* Total Streamed */}
 			<Td textAlign='center'>
 				<Skeleton as={Text} isLoaded={hasLoaded}>
-					{fromWei(stream?.streamedUntilUpdatedAt) +
-						fromWei(stream?.currentFlowRate) *
-							(Date.now() / 1000 - stream?.updatedAtTimestamp) || '---'}
+					{decimalFormatter(
+						fromWei(stream?.streamedUntilUpdatedAt) +
+							fromWei(stream?.currentFlowRate) *
+								(Date.now() / 1000 - stream?.updatedAtTimestamp)
+					) || '---'}
 				</Skeleton>
 			</Td>
 
 			<Td textAlign='center'>
 				<Skeleton as={Text} isLoaded={!isUninvestedDataLoading}>
-					{fromWei(userUninvested?.toString()) || '---'}
+					{decimalFormatter(fromWei(userUninvested?.toString())) || '---'}
 				</Skeleton>
 			</Td>
 
