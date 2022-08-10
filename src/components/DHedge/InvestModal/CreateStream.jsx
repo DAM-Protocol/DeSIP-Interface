@@ -152,18 +152,16 @@ const CreateStream = ({ poolData, defaultSelectedToken }) => {
 		});
 		txs.push(approveOp);
 
-		await sf
-			.batchCall(txs)
-			.exec(sfSigner)
-			.then(() => {
-				toast({
-					title: 'Stream created',
-					description: 'Your stream has been created',
-					status: 'success',
-					duration: 9000,
-					isClosable: true,
-				});
+		const tx = await sf.batchCall(txs).exec(sfSigner);
+		tx.wait(2).then(() => {
+			toast({
+				title: 'Stream created',
+				description: 'Your stream has been created',
+				status: 'success',
+				duration: 9000,
+				isClosable: true,
 			});
+		});
 	};
 
 	// 1. Calculate buffer transfer amount.
@@ -202,18 +200,16 @@ const CreateStream = ({ poolData, defaultSelectedToken }) => {
 		});
 		txs.push(updateStreamOp);
 
-		await sf
-			.batchCall(txs)
-			.exec(sfSigner)
-			.then(() => {
-				toast({
-					title: 'Stream updated',
-					description: 'Your stream has been updated',
-					status: 'success',
-					duration: 9000,
-					isClosable: true,
-				});
+		const tx = await sf.batchCall(txs).exec(sfSigner);
+		await tx.wait(2).then(() => {
+			toast({
+				title: 'Stream updated',
+				description: 'Your stream has been updated',
+				status: 'success',
+				duration: 9000,
+				isClosable: true,
 			});
+		});
 
 		const tokenDistObj = await getTokenDistIndices();
 		const alternatePermIndexId =
@@ -261,30 +257,27 @@ const CreateStream = ({ poolData, defaultSelectedToken }) => {
 			approvalTxs.push(approveOp);
 		}
 
-		if (approvalTxs.length > 1)
-			await sf
-				.batchCall(approvalTxs)
-				.exec(sfSigner)
-				.then(() => {
-					toast({
-						title: 'Approved subscriptions',
-						status: 'success',
-						duration: 9000,
-						isClosable: true,
-					});
+		if (approvalTxs.length > 1) {
+			const tx = await sf.batchCall(approvalTxs).exec(sfSigner);
+			tx.wait(2).then(() => {
+				toast({
+					title: 'Approved subscriptions',
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
 				});
-		else if (approvalTxs.length === 1)
-			await sf
-				.batchCall(approvalTxs)
-				.exec(sfSigner)
-				.then(() => {
-					toast({
-						title: 'Approved subscriptions',
-						status: 'success',
-						duration: 9000,
-						isClosable: true,
-					});
+			});
+		} else if (approvalTxs.length === 1) {
+			const tx = await sf.batchCall(approvalTxs).exec(sfSigner);
+			tx.wait(2).then(() => {
+				toast({
+					title: 'Approved subscriptions',
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
 				});
+			});
+		}
 	};
 
 	const handleCTAClick = () => {
@@ -298,7 +291,7 @@ const CreateStream = ({ poolData, defaultSelectedToken }) => {
 			});
 			return;
 		}
-		if (BigNumber.from(Units.FromWei(existingStreamRate)).eq(0)) createStream();
+		if (BigNumber.from(Units.ETH(existingStreamRate)).eq(0)) createStream();
 		else updateStream();
 	};
 
